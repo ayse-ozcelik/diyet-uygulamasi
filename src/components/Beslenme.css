@@ -1,0 +1,100 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+:root { 
+    --main-green: #1b4332;
+    --accent-salmon: #e76f51;
+    --bg-cream: #fffaf9;
+    --white: #ffffff;
+    --light-green: #b7e4c7;
+}
+
+/* --- ANA YAPI --- */
+.dashboard-wrapper { 
+    background-color: var(--bg-cream); 
+    min-height: 100vh; 
+    font-family: 'Poppins', sans-serif;
+    padding-bottom: 50px;
+}
+
+/* Navbar */
+.navbar { 
+    background-color: var(--main-green) !important; 
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* --- SIDEBAR & OVERLAY --- */
+#leftSidebar {
+    background-color: var(--main-green);
+    position: fixed; top: 0; left: -280px;
+    width: 280px; height: 100vh;
+    transition: 0.3s; z-index: 1050;
+    padding-top: 1rem;
+}
+#leftSidebar.active { left: 0; }
+
+#leftSidebar ul li a {
+    color: var(--light-green); text-decoration: none;
+    padding: 15px 25px; display: flex; align-items: center; transition: 0.2s;
+}
+#leftSidebar ul li a:hover { background: rgba(255,255,255,0.1); color: var(--white); }
+
+.sidebar-overlay {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    background: rgba(0,0,0,0.4); backdrop-filter: blur(2px);
+    display: none; z-index: 1040;
+}
+.sidebar-overlay.active { display: block; }
+
+/* --- KARTLAR --- */
+/* Ortak özellikler */
+.section-card, .nutrition-summary-card, .quick-card {
+    background: var(--white);
+    border-radius: 20px;
+    border: none;
+    box-shadow: 0 10px 30px rgba(231, 111, 81, 0.08);
+    margin-bottom: 20px;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+}
+
+/* Padding SADECE bunlara verilmeli (Quick-card'a değil) */
+.section-card, .nutrition-summary-card {
+    padding: 20px;
+}
+
+.section-card:hover, .quick-card:hover { transform: translateY(-5px); }
+
+.nutrition-summary-card { text-align: center; border-top: 5px solid var(--accent-salmon); }
+
+/* --- FORM & BUTONLAR --- */
+.form-control, .form-select {
+    background-color: #f8f9fa !important;
+    border: 1px solid #eee !important;
+    border-radius: 12px !important;
+    padding: 10px !important;
+}
+.form-control:focus { border-color: var(--main-green) !important; box-shadow: none !important; }
+
+.btn-save, .btn-success {
+    background-color: var(--accent-salmon) !important;
+    border: none !important;
+    border-radius: 50px !important;
+    color: white !important;
+    font-weight: 600 !important;
+    padding: 10px 20px !important;
+    box-shadow: 0 4px 10px rgba(231, 111, 81, 0.3);
+    transition: 0.3s;
+}
+.btn-save:hover { transform: translateY(-2px); background-color: #cf5d42 !important; }
+
+/* --- LİSTE & RESİMLER --- */
+.meal-list-item {
+    background: #f8fdfa; border-radius: 12px; margin-bottom: 10px;
+    border-left: 4px solid var(--accent-salmon); transition: 0.2s;
+}
+.meal-list-item:hover { background: white; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+
+.food-img { 
+    height: 140px; width: 100%; object-fit: cover; 
+    border-radius: 15px 15px 0 0; /* Kart border-radius ile uyumlu olması için */
+}

@@ -1,0 +1,85 @@
+
+.profile-page-container {
+    background: linear-gradient(135deg, #f0f7f4 0%, #e8f5e9 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+}
+
+.profile-card-custom {
+    background: #ffffff;
+    border-radius: 30px;
+    border: none;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+}
+
+/* Avatar ve Başlık Alanı */
+.profile-header-gradient {
+    background: linear-gradient(to right, #1b4332, #2d6a4f);
+    padding: 40px;
+    color: white;
+    text-align: center;
+}
+
+.avatar-wrapper {
+    position: relative;
+    width: 110px;
+    height: 110px;
+    margin: 0 auto 15px;
+    background: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+/* Form Elemanları ve Kalem Simgeleri */
+.input-group-custom {
+    position: relative;
+}
+
+.input-group-custom i.fa-pencil-alt {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #adb5bd;
+    font-size: 0.9rem;
+    pointer-events: none;
+}
+
+.profile-page-container .form-control {
+    border-radius: 15px;
+    border: 2px solid #f1f3f5;
+    background-color: #f8f9fa;
+    padding: 15px 45px 15px 20px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.profile-page-container .form-control:focus {
+    background-color: #fff;
+    border-color: #40916c;
+    box-shadow: 0 0 0 4px rgba(64, 145, 108, 0.1);
+}
+
+/* Butonlar */
+.btn-save-profile {
+    background: #e76f51;
+    color: white;
+    border: none;
+    border-radius: 15px;
+    padding: 16px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+}
+
+.btn-save-profile:hover {
+    background: #cf5d44;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(231, 111, 81, 0.2);
+    color: white;
+}

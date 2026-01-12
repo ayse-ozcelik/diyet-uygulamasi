@@ -1,0 +1,309 @@
+/* --- SAYFA YAPISI --- */
+.page-container {
+  min-height: 100vh;
+  padding: 80px 20px 40px 20px; /* Üst boşluğu artırdık çünkü yukarı çekeceğiz */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  
+
+
+  /* Arka planı buraya da ekledik, garanti olsun */
+  background-color: #fafafa;
+  background-image: 
+    radial-gradient(circle at 0% 0%, rgba(74, 222, 128, 0.4) 0%, transparent 50%),
+    radial-gradient(circle at 100% 0%, rgba(45, 212, 191, 0.4) 0%, transparent 50%),
+    radial-gradient(circle at 100% 100%, rgba(74, 222, 128, 0.4) 0%, transparent 50%),
+    radial-gradient(circle at 0% 100%, rgba(253, 224, 71, 0.2) 0%, transparent 50%);
+  background-attachment: fixed;
+}
+
+.max-width-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* --- BAŞLIK ALANI --- */
+.section-header {
+  text-align: center;
+  margin-bottom: 50px;
+  padding-top: 20px; /* Yukarı yapışmasın diye iç boşluk */
+}
+
+.section-header h2 {
+  font-size: 2rem;
+  /* Başlık rengini beyaz yaptık, koyu yeşil menüye uyumlu olsun */
+  color: #1f2937; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  text-shadow: 0 1px 2px rgba(255,255,255,0.8);
+}
+
+.section-header p {
+  color: #4b5563;
+  font-size: 1.1rem;
+}
+
+/* --- GRID YAPISI --- */
+.dietitian-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+}
+
+/* --- KART TASARIMI --- */
+.modern-card {
+  background: white;
+  border-radius: 20px;
+  padding: 30px;
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  transition: all 0.3s ease;
+  text-align: center;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+}
+
+.modern-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+}
+
+.rating-badge {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background-color: #fffbeb;
+  color: #b45309;
+  padding: 5px 10px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.image-container {
+  width: 100px;
+  height: 100px;
+  margin: 0 auto 20px auto;
+  padding: 4px;
+  background: linear-gradient(45deg, #4ade80, #0d9488);
+  border-radius: 50%;
+}
+
+.profile-img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid white;
+}
+
+.card-name {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 5px;
+}
+
+.card-location {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  color: #9ca3af;
+  font-size: 0.9rem;
+  margin-bottom: 15px;
+}
+
+.specialty-badge {
+  display: inline-block;
+  background-color: #f0fdf4;
+  color: #15803d;
+  padding: 6px 16px;
+  border-radius: 50px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+/* --- BUTONLAR --- */
+.modern-btn {
+  width: 100%;
+  background-color: #111827;
+  color: white;
+  padding: 14px;
+  border: none;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s;
+}
+
+.modern-btn:hover {
+  background-color: #16a34a;
+  transform: scale(1.02);
+}
+
+/* --- RANDEVULARIM BÖLÜMÜ --- */
+.appointments-section {
+  margin-top: 60px;
+  border-top: 2px dashed rgba(0,0,0,0.1);
+  padding-top: 40px;
+}
+
+.section-title-small {
+  font-size: 1.5rem;
+  color: #1f2937;
+  margin-bottom: 25px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.appointment-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 20px;
+}
+
+.appointment-card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  border-left: 5px solid #16a34a;
+  transition: transform 0.2s;
+}
+
+.appointment-card:hover {
+  transform: translateX(5px);
+}
+
+.app-info h4 {
+  margin: 0 0 5px 0;
+  color: #374151;
+  font-size: 1.1rem;
+}
+
+.app-details {
+  display: flex;
+  gap: 15px;
+  color: #6b7280;
+  font-size: 0.9rem;
+}
+
+.cancel-btn {
+  background-color: #fee2e2;
+  color: #dc2626;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.cancel-btn:hover {
+  background-color: #dc2626;
+  color: white;
+}
+
+.no-appointment {
+  text-align: center;
+  padding: 40px;
+  color: #6b7280;
+  background: rgba(255,255,255,0.6);
+  border-radius: 12px;
+  border: 1px dashed #d1d5db;
+}
+
+/* --- MODAL --- */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(3px);
+}
+
+.modal-content {
+  background: white;
+  padding: 30px;
+  border-radius: 16px;
+  width: 90%;
+  max-width: 450px;
+  position: relative;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 15px;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: #666;
+}
+
+.saat-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.saat-kutusu {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: white;
+  cursor: pointer;
+}
+
+.saat-kutusu:hover:not(:disabled) {
+  border-color: #16a34a;
+  color: #16a34a;
+}
+
+.saat-kutusu.dolu {
+  background-color: #fee2e2;
+  color: #991b1b;
+  border-color: #fecaca;
+  cursor: not-allowed;
+}
+
+.success-view {
+  text-align: center;
+  padding: 20px;
+}
+
+.success-icon {
+  font-size: 3rem;
+  color: #16a34a;
+  margin-bottom: 15px;
+}

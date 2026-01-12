@@ -1,0 +1,127 @@
+.auth-page {
+    /* Senin diğer renk/font kodların kalsın ama bunları güncelle: */
+    display: flex !important;
+    justify-content: center !important; /* Yatayda Orta */
+    align-items: center !important;    /* Dikeyde Orta */
+    
+    position: fixed !important; /* Ekranın her yerinde sabit durması için */
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    
+    z-index: 9999 !important;
+    margin: 0 !important;
+    
+}
+
+.auth-container {
+    background: white !important;
+    padding: 40px !important;
+    border-radius: 20px !important;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1) !important;
+    width: 100% !important;
+    max-width: 400px !important;
+    /* Kartın kendi içinde kaymasını engeller */
+    flex-shrink: 0; 
+}
+.app-logo { 
+    font-size: 90px; 
+    text-align: center; 
+    margin-bottom: 10px; 
+}
+
+.auth-container h2 { 
+    text-align: center; 
+    margin-bottom: 25px; 
+    color: #333; 
+    font-weight: 700;
+}
+
+/* --- FORM ELEMANLARI --- */
+.form-group { 
+    margin-bottom: 20px; 
+}
+
+.form-group label { 
+    display: block; 
+    margin-bottom: 8px; 
+    font-weight: 600; 
+    color: #555; 
+    text-align: left; /* Etiketleri sola yaslar */
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #eee;
+    border-radius: 10px;
+    outline: none;
+    transition: all 0.3s ease;
+    box-sizing: border-box; /* Padding'in genişliği bozmamasını sağlar */
+}
+
+.form-group input:focus { 
+    border-color: #66bb6a; 
+    box-shadow: 0 0 8px rgba(102, 187, 106, 0.2);
+}
+
+.btn-primary {
+    width: 100%;
+    padding: 14px;
+    background: #43a047;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover { 
+    background: #2e7d32; 
+    transform: translateY(-1px);
+}
+
+/* --- YARDIMCI SINIFLAR --- */
+.toggle-form { 
+    text-align: center; 
+    margin-top: 25px; 
+    font-size: 14px; 
+    color: #666;
+}
+
+.toggle-form span {
+    color: #43a047; 
+    cursor: pointer; 
+    font-weight: bold; 
+    margin-left: 5px;
+}
+
+.toggle-form span:hover {
+    text-decoration: underline;
+}
+
+/* --- MESAJ KUTULARI --- */
+.message {
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    text-align: center;
+    font-weight: 500;
+}
+
+.error { 
+    background: #ffebee; 
+    color: #c62828; 
+    border: 1px solid #ef9a9a; 
+}
+
+.success { 
+    background: #e8f5e9; 
+    color: #2e7d32; 
+    border: 1px solid #a5d6a7; 
+}

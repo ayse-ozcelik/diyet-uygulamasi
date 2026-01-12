@@ -1,0 +1,169 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+:root { 
+  /* YENİ RENK PALETİ: Earth Tones (Toprak/Krem) */
+  --primary-brown: #4E342E;   /* Ana Koyu Kahve (Eski yeşil yerine) */
+  --medium-brown: #8D6E63;    /* Orta ton kahve/vizon */
+  --soft-cream: #FDFBF7;      /* Zemin Rengi (Kırık Beyaz) */
+  --accent-gold: #D4A373;     /* Vurgu rengi (Altın sarısı/Bej) */
+  
+  /* İkon renkleri aynı kalabilir veya yumuşatılabilir */
+  --accent-orange: #ff9f43;
+  --accent-blue: #0984e3;
+  --accent-red: #ff7675;
+  --white: #ffffff;
+}
+
+/* --- GENEL DÜZEN --- */
+.dashboard-wrapper { 
+  background-color: var(--soft-cream); /* Arka plan artık krem */
+  min-height: 100vh; 
+  font-family: 'Poppins', sans-serif;
+  padding-bottom: 50px;
+}
+
+/* --- NAVBAR --- */
+/* Navbar'ı Layout.js'de style ile verdiğin için burası ezilebilir ama garanti olsun */
+.navbar { 
+  position: fixed; top: 0; width: 100%; z-index: 1030; 
+  background: var(--soft-cream) !important; 
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  border-bottom: 1px solid #EFEBE9;
+}
+
+/* --- SIDEBAR & OVERLAY --- */
+#leftSidebar {
+  position: fixed; left: -280px; top: 0; width: 280px; height: 100%;
+  background: var(--primary-brown); /* Sidebar artık koyu kahve */
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  z-index: 1050; 
+  padding-top: 1rem;
+  box-shadow: 10px 0 30px rgba(0,0,0,0.1);
+}
+
+#leftSidebar.active { left: 0; }
+
+#leftSidebar ul { list-style: none; padding: 20px; }
+#leftSidebar ul li a {
+  color: rgba(255, 255, 255, 0.9); 
+  text-decoration: none; 
+  display: flex;
+  align-items: center; 
+  padding: 12px 20px; 
+  border-radius: 12px; 
+  transition: 0.3s;
+  font-size: 1rem;
+}
+#leftSidebar ul li a:hover { 
+  background: rgba(255, 255, 255, 0.15); 
+  color: #fff; 
+  transform: translateX(10px); 
+}
+
+/* Overlay */
+.sidebar-overlay {
+  position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+  background-color: rgba(78, 52, 46, 0.4); /* Kahve tonlu karartma */
+  display: none; 
+  z-index: 1040;
+  backdrop-filter: blur(2px);
+  transition: background-color 0.3s ease;
+}
+.sidebar-overlay.active { display: block; }
+
+/* --- HEADER --- */
+.dashboard-header { 
+  /* Koyu yeşil gradient yerine çok soft bir geçiş */
+  background: linear-gradient(180deg, #FDFBF7 0%, #EFEBE9 100%); 
+  color: var(--primary-brown); /* Yazılar artık koyu */
+  padding: 6rem 0 4rem; 
+  border-radius: 0 0 50px 50px; 
+  text-align: center;
+}
+
+/* --- İSTATİSTİK KARTLARI --- */
+.stat-card {
+  background: var(--white); 
+  border-radius: 20px; 
+  padding: 25px;
+  display: flex; 
+  flex-direction: column; 
+  align-items: center;
+  justify-content: space-between;
+  text-align: center; 
+  border: 1px solid #f0f0f0; /* Hafif sınır */
+  box-shadow: 0 10px 25px rgba(78, 52, 46, 0.03); /* Gölge rengi değişti */
+  transition: all 0.3s ease; 
+  height: 260px;
+}
+
+.stat-card:hover { 
+  transform: translateY(-7px); 
+  box-shadow: 0 15px 30px rgba(78, 52, 46, 0.08) !important; 
+}
+
+.stat-icon {
+  width: 60px; height: 60px; 
+  border-radius: 15px; 
+  display: flex;
+  align-items: center; justify-content: center; 
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+}
+
+.stat-card .progress { width: 100%; margin: 10px 0; }
+.stat-card button { margin-top: auto; width: 100%; }
+
+/* --- GLASS KARTLAR --- */
+.glass-card-premium {
+    background: #fff;
+    border: 1px solid #EFEBE9;
+    border-radius: 25px;
+    box-shadow: 0 15px 35px rgba(78, 52, 46, 0.05);
+    transition: transform 0.3s ease;
+}
+
+/* --- OYUN ALANI --- */
+.game-card-minimal {
+    background: #fff;
+    border: 1px solid #EFEBE9;
+    border-radius: 25px;
+    position: relative;
+    overflow: hidden;
+}
+
+#game-container {
+    background-color: #F1F8E9; /* Çok açık yeşil (çim hissi için kalsın ama soft) */
+    background-image: 
+        linear-gradient(90deg, rgba(78, 52, 46, 0.05) 1px, transparent 1px),
+        linear-gradient(rgba(78, 52, 46, 0.05) 1px, transparent 1px);
+    background-size: 40px 40px; 
+    border-radius: 20px;
+    position: relative; 
+    overflow: hidden; 
+    border-bottom: 5px solid var(--medium-brown); /* Alt çizgi kahve oldu */
+}
+
+/* --- BUTONLAR --- */
+.btn-premium-gradient {
+    background: linear-gradient(135deg, #4E342E 0%, #6D4C41 100%);
+    border: none; color: white; border-radius: 15px;
+    padding: 10px 25px; font-weight: 600; transition: 0.3s;
+}
+.btn-premium-gradient:hover { 
+    transform: translateY(-3px); 
+    box-shadow: 0 10px 20px rgba(78, 52, 46, 0.2); 
+}
+
+/* --- MOTİVASYON KUTUSU --- */
+.motivation-mini-box {
+    border: 1px solid #EFEBE9;
+    background-color: #fff;
+    color: var(--primary-brown);
+}
+
+@media (max-width: 768px) {
+    .dashboard-header { padding: 5rem 0 3rem; }
+    .display-6 { font-size: 1.8rem; }
+    .stat-card { height: auto; min-height: 200px; }
+}
