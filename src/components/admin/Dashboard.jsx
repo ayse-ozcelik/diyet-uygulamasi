@@ -1,6 +1,26 @@
 import React, { useEffect, useState } from 'react';
 
-const Dashboard = () => {
+// Renk ve stil sabitleri
+const COLORS = {
+  primary: '#1b4332',
+  success: '#43a047',
+  danger: '#c62828',
+  warning: '#ffa502',
+  white: '#ffffff',
+  text: '#333333',
+  textMuted: '#6b7280',
+  dark: '#1b4332',
+  light: '#f8f9fa',
+};
+
+const BORDER_RADIUS = {
+  sm: '8px',
+  md: '12px',
+  lg: '20px',
+  xl: '28px',
+};
+
+const AdminDashboard = () => {
   const [stats, setStats] = useState({ userCount: 0, foodCount: 0 });
   
   // Liderlik Tabloları
@@ -58,39 +78,133 @@ const Dashboard = () => {
 
   return (
     <div>
-      <h2 style={{ color: '#2c3e50', marginBottom: '10px' }}>📊 Admin Kontrol Paneli</h2>
+      <h2 style={{ color: COLORS.dark, marginBottom: '2rem', fontSize: '2rem', fontWeight: '700' }}>📊 Admin Kontrol Paneli</h2>
       
       {/* --- ÜST KARTLAR --- */}
-      <div style={{ display: 'flex', gap: '20px', marginBottom: '30px', flexWrap: 'wrap' }}>
-        <div style={statCardStyle}>
-          <h3>👥 {stats.userCount}</h3>
-          <span>Kullanıcı</span>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem', marginBottom: '2rem' }}>
+        <div style={{
+          textAlign: 'center',
+          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08)',
+          border: 'none',
+          padding: '1.5rem',
+          backgroundColor: COLORS.white,
+          borderRadius: BORDER_RADIUS.lg,
+          height: '100%',
+        }}>
+          <div style={{
+            backgroundColor: '#e8f5e9',
+            color: COLORS.primary,
+            width: '56px',
+            height: '56px',
+            borderRadius: BORDER_RADIUS.md,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            margin: '0 auto 1rem',
+            fontSize: '1.25rem',
+          }}>
+            <i className="fas fa-users"></i>
+          </div>
+          <div style={{ fontSize: '1.5rem', fontWeight: '700', marginBottom: '0.25rem', color: COLORS.text }}>
+            {stats.userCount}
+          </div>
+          <div style={{ fontSize: '0.875rem', color: COLORS.textMuted, fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+            Kullanıcı
+          </div>
         </div>
-        <div style={statCardStyle}>
-          <h3>🍎 {stats.foodCount}</h3>
-          <span>Besin Çeşidi</span>
+        <div style={{
+          textAlign: 'center',
+          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08)',
+          border: 'none',
+          padding: '1.5rem',
+          backgroundColor: COLORS.white,
+          borderRadius: BORDER_RADIUS.lg,
+          height: '100%',
+        }}>
+          <div style={{
+            backgroundColor: '#fffaf0',
+            color: COLORS.warning,
+            width: '56px',
+            height: '56px',
+            borderRadius: BORDER_RADIUS.md,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            margin: '0 auto 1rem',
+            fontSize: '1.25rem',
+          }}>
+            <i className="fas fa-apple-alt"></i>
+          </div>
+          <div style={{ fontSize: '1.5rem', fontWeight: '700', marginBottom: '0.25rem', color: COLORS.text }}>
+            {stats.foodCount}
+          </div>
+          <div style={{ fontSize: '0.875rem', color: COLORS.textMuted, fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+            Besin Çeşidi
+          </div>
         </div>
-        
-        {/* YENİ: Risk Sayacı Kartı */}
-        <div style={{ ...statCardStyle, borderLeft: '5px solid #e74c3c', color: overLimitUsers.length > 0 ? '#c0392b' : '#27ae60' }}>
-          <h3>⚠️ {overLimitUsers.length}</h3>
-          <span>Limit Aşan (Bugün)</span>
+        <div style={{
+          textAlign: 'center',
+          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08)',
+          border: 'none',
+          padding: '1.5rem',
+          backgroundColor: COLORS.white,
+          borderRadius: BORDER_RADIUS.lg,
+          height: '100%',
+        }}>
+          <div style={{
+            backgroundColor: overLimitUsers.length > 0 ? '#fff5f5' : '#f0fff4',
+            color: overLimitUsers.length > 0 ? COLORS.danger : COLORS.success,
+            width: '56px',
+            height: '56px',
+            borderRadius: BORDER_RADIUS.md,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            margin: '0 auto 1rem',
+            fontSize: '1.25rem',
+          }}>
+            <i className="fas fa-exclamation-triangle"></i>
+          </div>
+          <div style={{ fontSize: '1.5rem', fontWeight: '700', marginBottom: '0.25rem', color: COLORS.text }}>
+            {overLimitUsers.length}
+          </div>
+          <div style={{ fontSize: '0.875rem', color: COLORS.textMuted, fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+            Limit Aşan (Bugün)
+          </div>
         </div>
       </div>
 
       {/* --- ⚠️ ALARM BÖLÜMÜ: KALORİ LİMİTİNİ AŞANLAR --- */}
       {overLimitUsers.length > 0 && (
-        <div style={{ backgroundColor: '#fff5f5', border: '1px solid #ffcccc', padding: '20px', borderRadius: '12px', marginBottom: '30px' }}>
-          <h3 style={{ color: '#c0392b', display: 'flex', alignItems: 'center', gap: '10px', marginTop: 0 }}>
+        <div 
+          style={{ 
+            backgroundColor: '#fff5f5', 
+            border: `1px solid #ffcccc`, 
+            marginBottom: '2rem',
+            padding: '1.5rem',
+            borderRadius: BORDER_RADIUS.lg,
+            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08)',
+          }}
+        >
+          <h3 style={{ color: COLORS.danger, display: 'flex', alignItems: 'center', gap: '10px', marginTop: 0, marginBottom: '1.5rem' }}>
              🚨 Dikkat! Bugün Kalori Sınırını Aşanlar
           </h3>
-          <div style={{ display: 'flex', gap: '15px', flexWrap: 'wrap' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: '1rem' }}>
             {overLimitUsers.map((u, i) => (
-              <div key={i} style={{ backgroundColor: 'white', padding: '15px', borderRadius: '8px', boxShadow: '0 2px 5px rgba(0,0,0,0.1)', borderLeft: '4px solid #c0392b' }}>
-                <div style={{ fontWeight: 'bold', fontSize: '16px' }}>{u.name}</div>
-                <div style={{ fontSize: '20px', color: '#c0392b', fontWeight: 'bold', margin: '5px 0' }}>{u.total} kcal</div>
-                <div style={{ fontSize: '12px', color: '#7f8c8d' }}>
-                  Sınırı <span style={{ fontWeight: 'bold', color: 'red' }}>{u.excess} kcal</span> aştı!
+              <div 
+                key={i} 
+                style={{ 
+                  borderLeft: `4px solid ${COLORS.danger}`, 
+                  padding: '1rem',
+                  backgroundColor: COLORS.white,
+                  borderRadius: BORDER_RADIUS.md,
+                  boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05)',
+                }}
+              >
+                <div style={{ fontWeight: '700', fontSize: '1rem', marginBottom: '0.5rem', color: COLORS.text }}>{u.name}</div>
+                <div style={{ fontSize: '1.5rem', color: COLORS.danger, fontWeight: '700', marginBottom: '0.25rem' }}>{u.total} kcal</div>
+                <div style={{ fontSize: '0.875rem', color: COLORS.textMuted }}>
+                  Sınırı <span style={{ fontWeight: '700', color: COLORS.danger }}>{u.excess} kcal</span> aştı!
                 </div>
               </div>
             ))}
@@ -99,8 +213,8 @@ const Dashboard = () => {
       )}
 
       {/* --- GRAFİKLER (LİDER TABLOSU) --- */}
-      <h4 style={{ color: '#7f8c8d', marginBottom: '15px' }}>🏆 Genel Performans Liderleri</h4>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '20px' }}>
+      <h4 style={{ color: COLORS.textMuted, marginBottom: '1.5rem', fontSize: '1.5rem', fontWeight: '600' }}>🏆 Genel Performans Liderleri</h4>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem' }}>
         
         <ChartCard 
           title="🥗 En İyi Beslenenler" 
@@ -138,20 +252,36 @@ const Dashboard = () => {
 const ChartCard = ({ title, data, dataKey, color, icon, unit }) => {
   const maxValue = data.length > 0 ? data[0][dataKey] : 1;
   return (
-    <div style={{ backgroundColor: 'white', padding: '20px', borderRadius: '12px', boxShadow: '0 4px 10px rgba(0,0,0,0.05)' }}>
-      <h4 style={{ color: '#2c3e50', borderBottom: `2px solid ${color}`, paddingBottom: '10px', marginBottom: '15px' }}>{title}</h4>
+    <div 
+      style={{ 
+        padding: '1.5rem',
+        backgroundColor: COLORS.white,
+        borderRadius: BORDER_RADIUS.lg,
+        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08)',
+        transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.transform = 'translateY(-2px)';
+        e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.12)';
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.transform = 'translateY(0)';
+        e.currentTarget.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.08)';
+      }}
+    >
+      <h4 style={{ color: COLORS.dark, borderBottom: `2px solid ${color}`, paddingBottom: '0.75rem', marginBottom: '1rem', fontSize: '1.125rem', fontWeight: '600' }}>{title}</h4>
       {data.length === 0 || data[0][dataKey] === 0 ? (
-        <p style={{ color: '#bdc3c7', fontSize: '14px' }}>Veri yok.</p>
+        <p style={{ color: COLORS.textMuted, fontSize: '0.875rem' }}>Veri yok.</p>
       ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           {data.map((user, index) => (
             <div key={index}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px', marginBottom: '5px', color: '#555' }}>
-                <span style={{ fontWeight: 'bold' }}>{index + 1}. {user.name}</span>
-                <span style={{ fontWeight: 'bold', color: color }}>{user[dataKey]} {unit}</span>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.875rem', marginBottom: '0.5rem', color: COLORS.text }}>
+                <span style={{ fontWeight: '600' }}>{index + 1}. {user.name}</span>
+                <span style={{ fontWeight: '700', color: color }}>{user[dataKey]} {unit}</span>
               </div>
-              <div style={{ width: '100%', backgroundColor: '#ecf0f1', borderRadius: '10px', height: '10px' }}>
-                <div style={{ width: `${(user[dataKey] / maxValue) * 100}%`, backgroundColor: color, height: '100%', borderRadius: '10px', transition: 'width 0.5s ease' }}></div>
+              <div style={{ width: '100%', backgroundColor: COLORS.light, borderRadius: BORDER_RADIUS.md, height: '10px', overflow: 'hidden' }}>
+                <div style={{ width: `${(user[dataKey] / maxValue) * 100}%`, backgroundColor: color, height: '100%', borderRadius: BORDER_RADIUS.md, transition: 'width 0.5s ease' }}></div>
               </div>
             </div>
           ))}
@@ -161,16 +291,4 @@ const ChartCard = ({ title, data, dataKey, color, icon, unit }) => {
   );
 };
 
-const statCardStyle = {
-  backgroundColor: 'white',
-  padding: '15px 25px',
-  borderRadius: '10px',
-  boxShadow: '0 2px 5px rgba(0,0,0,0.05)',
-  display: 'flex',
-  alignItems: 'center',
-  gap: '15px',
-  color: '#2c3e50',
-  minWidth: '150px'
-};
-
-export default Dashboard;
+export default AdminDashboard;

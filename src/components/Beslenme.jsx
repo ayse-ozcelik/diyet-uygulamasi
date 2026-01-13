@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { getCurrentUser, getUserMeals, saveMeal, deleteMeal, getFoods } from '../api/api';
+import './Beslenme.css';
+
+// Tarih fonksiyonu
+const getToday = (format = 'tr-TR') => {
+  return new Date().toLocaleDateString(format);
+};
 
 const foodLibrary = [
     { id: "yumurta", name: "Haşlanmış Yumurta (1 Adet)", cal: 75, img: "https://images.unsplash.com/photo-1525351484163-7529414344d8?w=500" },
@@ -10,41 +17,62 @@ const foodLibrary = [
 
 function Beslenme() {
     const navigate = useNavigate();
-    const [user] = useState(JSON.parse(localStorage.getItem('currentUser')) || null);
+    const [user] = useState(() => getCurrentUser());
     const [meals, setMeals] = useState([]);
     const [formData, setFormData] = useState({ type: 'Kahvaltı', food: '', cal: '' });
     const [adminFoods, setAdminFoods] = useState([]);
 
     const userKey = user?.email || "guest";
-    const mealStorageKey = `${userKey}_userMeals`;
 
     useEffect(() => {
-        if (!user) { navigate('/'); return; }
+        const checkAuth = () => {
+            const currentUser = getCurrentUser();
+            if (!currentUser || !currentUser.email) { 
+                localStorage.removeItem('currentUser');
+                navigate('/', { replace: true }); 
+                return false;
+            }
+            return true;
+        };
+
+        if (!checkAuth()) return;
+
+        // Browser history değişikliklerini dinle
+        const handlePopState = () => {
+            const currentUser = getCurrentUser();
+            if (!currentUser || !currentUser.email) {
+                localStorage.removeItem('currentUser');
+                setTimeout(() => {
+                    navigate('/', { replace: true });
+                }, 0);
+            }
+        };
+
+        window.addEventListener('popstate', handlePopState);
         loadData();
+        
+        return () => {
+            window.removeEventListener('popstate', handlePopState);
+        };
     }, [user, navigate]);
 
     const loadData = () => {
-        const allMeals = JSON.parse(localStorage.getItem(mealStorageKey)) || [];
-        const today = new Date().toLocaleDateString('tr-TR');
+        const today = getToday('tr-TR');
+        const allMeals = getUserMeals(userKey);
         setMeals(allMeals.filter(m => m.date === today));
-        const savedAdminFoods = JSON.parse(localStorage.getItem('myAppFoods')) || [];
-        setAdminFoods(savedAdminFoods);
+        setAdminFoods(getFoods());
     };
 
     const handleSaveMeal = (newMeal) => {
-        const allMeals = JSON.parse(localStorage.getItem(mealStorageKey)) || [];
-        const today = new Date().toLocaleDateString('tr-TR');
-        const mealWithDate = { ...newMeal, id: Date.now(), date: today };
-        const updatedAllMeals = [...allMeals, mealWithDate];
-        localStorage.setItem(mealStorageKey, JSON.stringify(updatedAllMeals));
+        const today = getToday('tr-TR');
+        const mealWithDate = { ...newMeal, date: today };
+        saveMeal(userKey, mealWithDate);
         loadData();
     };
 
-    const deleteMeal = (id) => {
+    const handleDeleteMeal = (id) => {
         if (window.confirm("Bu öğünü silmek istediğine emin misin?")) {
-            const allMeals = JSON.parse(localStorage.getItem(mealStorageKey)) || [];
-            const updated = allMeals.filter(m => m.id !== id);
-            localStorage.setItem(mealStorageKey, JSON.stringify(updated));
+            deleteMeal(userKey, id);
             loadData();
         }
     };
@@ -65,52 +93,34 @@ function Beslenme() {
     const pageBgColor = `hsl(${dynamicHue}, ${dynamicSaturation}%, ${dynamicLightness}%)`;
 
     return (
-        <div style={{ 
-            backgroundColor: pageBgColor, 
-            minHeight: '100vh', 
-            transition: 'background-color 1.2s ease-in-out', // Çok yumuşak geçiş
-            padding: '0 0 50px 0' // Üst boşluğu tamamen kaldırdık
-        }}>
-            {/* Üst Kısım: Kalori Kartı (Sayfanın en tepesine yapışık) */}
-            <div className="w-100 mb-5" style={{ 
-                background: 'white', 
-                boxShadow: '0 4px 20px rgba(0,0,0,0.05)',
-                borderBottom: '1px solid rgba(0,0,0,0.05)'
-            }}>
+        <div className="beslenme-wrapper">
+            {/* Üst Kısım: Kalori Kartı */}
+            <div className="w-100 mb-5 beslenme-header-card">
                 <div className="container py-4">
                     <div className="row justify-content-center">
                         <div className="col-md-8 text-center">
-                            {/* Renkli Gradient Şerit */}
-                            <div className="mx-auto mb-3" style={{ 
-                                height: '5px', 
-                                width: '100px', 
-                                borderRadius: '10px',
-                                background: 'linear-gradient(90deg, #1b4332, #e76f51)' 
-                            }}></div>
-                            
-                            <h5 className="fw-bold text-muted text-uppercase mb-1" style={{ letterSpacing: '2px', fontSize: '0.8rem' }}>
+                            <div className="mx-auto mb-3 beslenme-gradient-line"></div>
+                            <h5 className="fw-bold text-muted text-uppercase mb-1 beslenme-title">
                                 Günlük Kalori Özeti
                             </h5>
-                            
                             <div className="d-flex align-items-baseline justify-content-center mb-3">
-                                <span className="display-3 fw-bold" style={{ color: '#1b4332' }}>{totalCalories}</span>
+                                <span className="display-3 fw-bold beslenme-calorie-value">{totalCalories}</span>
                                 <span className="ms-2 h3 text-muted fw-light">kcal</span>
                             </div>
-
                             <div className="px-md-5">
-                                <div className="progress" style={{ height: '12px', borderRadius: '20px', backgroundColor: '#f0f0f0' }}>
-                                    <div className="progress-bar progress-bar-striped progress-bar-animated" 
-                                         role="progressbar" 
-                                         style={{ 
-                                             width: `${calorieRatio * 100}%`, 
-                                             backgroundColor: calorieRatio > 0.9 ? '#c62828' : '#1b4332',
-                                             borderRadius: '20px',
-                                             transition: 'width 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
-                                         }}></div>
+                                <div className="progress beslenme-progress">
+                                    <div 
+                                        className="progress-bar progress-bar-striped progress-bar-animated beslenme-calorie-progress-bar" 
+                                        role="progressbar" 
+                                        style={{ 
+                                            width: `${calorieRatio * 100}%`, 
+                                            backgroundColor: calorieRatio > 0.9 ? '#c62828' : '#1b4332'
+                                        }}
+                                    ></div>
                                 </div>
-                                <div className="d-flex justify-content-between mt-2 text-muted fw-bold" style={{ fontSize: '0.75rem' }}>
+                                <div className="d-flex justify-content-between mt-2 text-muted fw-bold beslenme-progress-label">
                                     <span>0 kcal</span>
-                                    <span style={{ color: calorieRatio > 1 ? '#c62828' : '#1b4332' }}>
+                                    <span className={calorieRatio > 1 ? 'beslenme-progress-label-danger' : 'beslenme-calorie-value'}>
                                         {calorieRatio > 1 ? 'LİMİT AŞILDI!' : `HEDEF: ${calorieLimit} kcal`}
                                     </span>
                                 </div>
@@ -125,7 +135,7 @@ function Beslenme() {
                     {/* Sol: Ekleme Formu */}
                     <div className="col-lg-5">
                         <div className="card shadow-sm p-4 bg-white rounded-4 border-0 h-100">
-                            <h5 className="fw-bold mb-4" style={{color: '#e76f51'}}>
+                            <h5 className="fw-bold mb-4 beslenme-form-title">
                                 <i className="fas fa-plus-circle me-2"></i>Yeni Öğün Ekle
                             </h5>
                             <form onSubmit={(e) => { e.preventDefault(); handleSaveMeal(formData); setFormData({...formData, food: '', cal: ''}); }}>
@@ -143,7 +153,7 @@ function Beslenme() {
                                     <label className="small fw-bold text-muted mb-1">KALORİ</label>
                                     <input className="form-control border-0 bg-light rounded-3 shadow-none py-2" type="number" value={formData.cal} onChange={e => setFormData({...formData, cal: e.target.value})} placeholder="0" required />
                                 </div>
-                                <button className="btn btn-save w-100 py-3 fw-bold rounded-pill shadow-sm" style={{ backgroundColor: '#e76f51', color: 'white', border: 'none' }}>ÖĞÜNÜ KAYDET</button>
+                                <button className="btn btn-save w-100 py-3 fw-bold rounded-pill shadow-sm">ÖĞÜNÜ KAYDET</button>
                             </form>
                         </div>
                     </div>
@@ -151,22 +161,21 @@ function Beslenme() {
                     {/* Sağ: Timeline Listesi */}
                     <div className="col-lg-7">
                         <div className="card shadow-sm p-4 bg-white rounded-4 border-0 h-100">
-                            <h5 className="fw-bold mb-4 border-bottom pb-2" style={{color: '#1b4332'}}>
+                            <h5 className="fw-bold mb-4 border-bottom pb-2 beslenme-section-title">
                                 <i className="fas fa-history me-2"></i>Bugün Ne Yedin?
                             </h5>
-                            <div className="meal-timeline ps-3" style={{ maxHeight: '420px', overflowY: 'auto', borderLeft: '2px dashed #e9ecef' }}>
+                            <div className="meal-timeline ps-3 beslenme-timeline">
                                 {meals.length > 0 ? meals.map(m => (
                                     <div key={m.id} className="position-relative mb-3 ps-4">
-                                        <div className="position-absolute start-0 translate-middle-x bg-white" 
-                                             style={{ top: '10px', width: '12px', height: '12px', borderRadius: '50%', border: '3px solid #e76f51', zIndex: 2 }}></div>
-                                        <div className="p-3 shadow-sm rounded-4 border-0 d-flex justify-content-between align-items-center" style={{ backgroundColor: '#fcfcfc' }}>
+                                        <div className="position-absolute start-0 translate-middle-x bg-white beslenme-timeline-dot"></div>
+                                        <div className="p-3 shadow-sm rounded-4 border-0 d-flex justify-content-between align-items-center beslenme-meal-card">
                                             <div>
-                                                <small className="badge rounded-pill mb-1" style={{backgroundColor: '#1b4332', fontSize: '0.65rem'}}>{m.type}</small>
+                                                <small className="badge rounded-pill mb-1 beslenme-meal-badge">{m.type}</small>
                                                 <h6 className="mb-0 fw-bold">{m.food}</h6>
                                             </div>
                                             <div className="d-flex align-items-center">
-                                                <span className="fw-bold me-3" style={{ color: '#1b4332' }}>{m.cal} kcal</span>
-                                                <button className="btn btn-sm text-danger opacity-50" onClick={() => deleteMeal(m.id)}><i className="fas fa-trash-alt"></i></button>
+                                                <span className="fw-bold me-3 beslenme-meal-calorie">{m.cal} kcal</span>
+                                                <button className="btn btn-sm text-danger opacity-50" onClick={() => handleDeleteMeal(m.id)}><i className="fas fa-trash-alt"></i></button>
                                             </div>
                                         </div>
                                     </div>
@@ -182,22 +191,22 @@ function Beslenme() {
                         <div className="card shadow-sm p-4 bg-white rounded-4 border-0 d-flex flex-row align-items-center">
                             <div className="me-4 text-center">
                                 <h6 className="small fw-bold text-muted mb-2">DİYET PUANI</h6>
-                                <div className="h2 mb-0 fw-bold" style={{ color: '#2d6a4f' }}>75</div>
+                                <div className="h2 mb-0 fw-bold beslenme-diet-score">75</div>
                             </div>
                             <div className="flex-grow-1">
-                                <div className="progress" style={{ height: '8px', backgroundColor: '#f0f0f0' }}>
-                                    <div className="progress-bar bg-success" style={{ width: '75%' }}></div>
+                                <div className="progress beslenme-diet-progress">
+                                    <div className="progress-bar bg-success beslenme-diet-progress-bar"></div>
                                 </div>
                                 <p className="small mt-2 mb-0 text-muted">Hedeflerine %75 uyumlusun. Harika! 🌿</p>
                             </div>
                         </div>
                     </div>
                     <div className="col-md-6">
-                        <div className="card shadow-sm p-4 rounded-4 border-0" style={{ backgroundColor: '#fff8e1' }}>
+                        <div className="card shadow-sm p-4 rounded-4 border-0 beslenme-tip-card">
                             <div className="d-flex align-items-center">
                                 <div className="fs-2 me-3">💡</div>
                                 <div>
-                                    <h6 className="fw-bold mb-1" style={{ color: '#856404' }}>Günün İpucu</h6>
+                                    <h6 className="fw-bold mb-1 beslenme-tip-title">Günün İpucu</h6>
                                     <p className="small mb-0 opacity-75">Yeşil çay metabolizmanı hızlandırır, bugün bir fincan denemeye ne dersin?</p>
                                 </div>
                             </div>
@@ -207,15 +216,14 @@ function Beslenme() {
 
                 {/* Hızlı Ekleme Kısmı */}
                 <div className="row mt-5 mb-5">
-                    <div className="col-12"><h5 className="fw-bold mb-4" style={{color: '#1b4332'}}>Hızlı Seçenekler</h5></div>
+                    <div className="col-12"><h5 className="fw-bold mb-4 beslenme-section-title">Hızlı Seçenekler</h5></div>
                     {allAvailableFoods.map((item, index) => (
                         <div key={index} className="col-6 col-md-3 mb-4">
                             <div className="card border-0 shadow-sm h-100 overflow-hidden rounded-4 transition-all hover-up">
-                                <img src={item.img || item.image} className="card-img-top" style={{height: '130px', objectFit: 'cover'}} alt={item.name} />
+                                <img src={item.img || item.image} className="card-img-top beslenme-food-image" alt={item.name} />
                                 <div className="p-3 text-center">
                                     <h6 className="small fw-bold text-truncate mb-2">{item.name}</h6>
-                                    <button className="btn btn-outline-success btn-sm w-100 rounded-pill fw-bold" 
-                                            style={{ borderColor: '#1b4332', color: '#1b4332' }}
+                                    <button className="btn btn-outline-success btn-sm w-100 rounded-pill fw-bold beslenme-food-btn"
                                             onClick={() => handleSaveMeal({ type: 'Ara Öğün', food: item.name, cal: item.cal || item.calorie })}>
                                         {item.cal || item.calorie} kcal +
                                     </button>

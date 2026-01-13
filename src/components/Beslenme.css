@@ -3,7 +3,7 @@
 :root { 
     --main-green: #1b4332;
     --accent-salmon: #e76f51;
-    --bg-cream: #fffaf9;
+    --bg-cream: #f0f9f4;
     --white: #ffffff;
     --light-green: #b7e4c7;
 }
@@ -16,34 +16,9 @@
     padding-bottom: 50px;
 }
 
-/* Navbar */
-.navbar { 
-    background-color: var(--main-white) !important; 
-    box-shadow: 0 4px 12px rgb(245, 245, 245);
-}
+/* Navbar - Layout.css'de tanımlı, burada kaldırıldı */
 
-/* --- SIDEBAR & OVERLAY --- */
-#leftSidebar {
-    background-color: var(--main-white);
-    position: fixed; top: 0; left: -280px;
-    width: 280px; height: 100vh;
-    transition: 0.3s; z-index: 1050;
-    padding-top: 1rem;
-}
-#leftSidebar.active { left: 0; }
-
-#leftSidebar ul li a {
-    color: var(--light-white); text-decoration: none;
-    padding: 15px 25px; display: flex; align-items: center; transition: 0.2s;
-}
-#leftSidebar ul li a:hover { background: rgba(255,255,255,0.1); color: var(--white); }
-
-.sidebar-overlay {
-    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-    background: rgba(0,0,0,0.4); backdrop-filter: blur(2px);
-    display: none; z-index: 1040;
-}
-.sidebar-overlay.active { display: block; }
+/* --- SIDEBAR & OVERLAY - Layout.css'de tanımlı, burada kaldırıldı --- */
 
 /* --- KARTLAR --- */
 /* Ortak özellikler */
@@ -96,5 +71,128 @@
 
 .food-img { 
     height: 140px; width: 100%; object-fit: cover; 
-    border-radius: 15px 15px 0 0; /* Kart border-radius ile uyumlu olması için */
+    border-radius: 15px 15px 0 0;
+}
+
+/* Beslenme Sayfası Özel Stiller */
+.beslenme-wrapper {
+    background: linear-gradient(135deg, #f0f9f4 0%, #e8f5e9 50%, #f0f9f4 100%);
+    background-color: var(--bg-cream);
+    background-attachment: fixed;
+    min-height: 100vh;
+    padding: 0 0 50px 0;
+}
+
+.beslenme-header-card {
+    background: white;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.beslenme-gradient-line {
+    height: 5px;
+    width: 100px;
+    border-radius: 10px;
+    background: linear-gradient(90deg, #1b4332, #e76f51);
+}
+
+.beslenme-title {
+    letter-spacing: 2px;
+    font-size: 0.8rem;
+}
+
+.beslenme-calorie-value {
+    color: #1b4332;
+}
+
+.beslenme-progress {
+    height: 12px;
+    border-radius: 20px;
+    background-color: #f0f0f0;
+}
+
+.beslenme-progress-label {
+    font-size: 0.75rem;
+}
+
+.beslenme-progress-label-danger {
+    color: #c62828;
+}
+
+.beslenme-form-title {
+    color: #e76f51;
+}
+
+.beslenme-timeline {
+    max-height: 420px;
+    overflow-y: auto;
+    border-left: 2px dashed #e9ecef;
+}
+
+.beslenme-timeline-dot {
+    top: 10px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 3px solid #e76f51;
+    z-index: 2;
+}
+
+.beslenme-meal-card {
+    background-color: #fcfcfc;
+}
+
+.beslenme-meal-badge {
+    background-color: #1b4332;
+    font-size: 0.65rem;
+}
+
+.beslenme-meal-calorie {
+    color: #1b4332;
+}
+
+.beslenme-diet-score {
+    color: #2d6a4f;
+}
+
+.beslenme-diet-progress {
+    height: 8px;
+    background-color: #f0f0f0;
+}
+
+.beslenme-tip-card {
+    background-color: #fff8e1;
+}
+
+.beslenme-tip-title {
+    color: #856404;
+}
+
+.beslenme-section-title {
+    color: #1b4332;
+}
+
+.beslenme-food-image {
+    height: 130px;
+    object-fit: cover;
+}
+
+.beslenme-food-btn {
+    border-color: #1b4332;
+    color: #1b4332;
+}
+
+.beslenme-progress-bar {
+    border-radius: 20px;
+    transition: width 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.beslenme-diet-progress-bar {
+    width: 75%;
+}
+
+.beslenme-calorie-progress-bar {
+    border-radius: 20px;
+    transition: width 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    /* Dinamik width ve backgroundColor inline style ile set edilecek */
 }

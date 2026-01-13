@@ -1,6 +1,6 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { getCurrentUser, saveUser, saveCurrentUser } from '../api/api';
 import './Profil.css';
 
 function Profil() {
@@ -8,12 +8,35 @@ function Profil() {
     const [user, setUser] = useState({ name: '', email: '', weight: '', goalWeight: '', height: '' });
 
     useEffect(() => {
-        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-        if (!currentUser) {
-            navigate('/');
-        } else {
+        const checkAuth = () => {
+            const currentUser = getCurrentUser();
+            if (!currentUser || !currentUser.email) {
+                localStorage.removeItem('currentUser');
+                navigate('/', { replace: true });
+                return false;
+            }
             setUser(currentUser);
-        }
+            return true;
+        };
+
+        if (!checkAuth()) return;
+
+        // Browser history değişikliklerini dinle
+        const handlePopState = () => {
+            const currentUser = getCurrentUser();
+            if (!currentUser || !currentUser.email) {
+                localStorage.removeItem('currentUser');
+                setTimeout(() => {
+                    navigate('/', { replace: true });
+                }, 0);
+            }
+        };
+
+        window.addEventListener('popstate', handlePopState);
+        
+        return () => {
+            window.removeEventListener('popstate', handlePopState);
+        };
     }, [navigate]);
 
     const handleChange = (e) => {
@@ -22,15 +45,8 @@ function Profil() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-
-        // 1. Mevcut oturumu güncelle
-        localStorage.setItem('currentUser', JSON.stringify(user));
-
-        // 2. Ana kullanıcı listesini (myAppUsers) kalıcı olarak güncelle
-        let allUsers = JSON.parse(localStorage.getItem('myAppUsers')) || [];
-        const updatedUsers = allUsers.map(u => u.email === user.email ? user : u);
-        localStorage.setItem('myAppUsers', JSON.stringify(updatedUsers));
-
+        saveCurrentUser(user);
+        saveUser(user);
         alert("Bilgilerin başarıyla güncellendi! 🌿");
         navigate('/dashboard');
     };
@@ -45,7 +61,7 @@ function Profil() {
                             {/* Üst Kısım: Başlık ve Görsel */}
                             <div className="profile-header-gradient">
                                 <div className="avatar-wrapper">
-                                    <i className="fas fa-user-circle fa-4x" style={{ color: '#1b4332' }}></i>
+                                    <i className="fas fa-user-circle fa-4x profile-avatar-icon"></i>
                                 </div>
                                 <h4 className="fw-bold mb-1">Hesap Ayarları</h4>
                                 <p className="mb-0 opacity-75 small">Kişisel sağlık profilini yönet</p>
@@ -81,7 +97,7 @@ function Profil() {
                                                     value={user.email}
                                                     disabled
                                                 />
-                                                <i className="fas fa-lock" style={{ color: '#ced4da' }}></i>
+                                                <i className="fas fa-lock profile-lock-icon"></i>
                                             </div>
                                         </div>
 
@@ -96,7 +112,7 @@ function Profil() {
                                                     value={user.weight}
                                                     onChange={handleChange}
                                                 />
-                                                <i className="fas fa-pencil-alt" style={{ right: '12px' }}></i>
+                                                <i className="fas fa-pencil-alt profile-input-icon-right"></i>
                                             </div>
                                         </div>
 
@@ -110,7 +126,7 @@ function Profil() {
                                                     value={user.height}
                                                     onChange={handleChange}
                                                 />
-                                                <i className="fas fa-pencil-alt" style={{ right: '12px' }}></i>
+                                                <i className="fas fa-pencil-alt profile-input-icon-right"></i>
                                             </div>
                                         </div>
 
@@ -124,7 +140,7 @@ function Profil() {
                                                     value={user.goalWeight}
                                                     onChange={handleChange}
                                                 />
-                                                <i className="fas fa-pencil-alt" style={{ right: '12px' }}></i>
+                                                <i className="fas fa-pencil-alt profile-input-icon-right"></i>
                                             </div>
                                         </div>
                                     </div>

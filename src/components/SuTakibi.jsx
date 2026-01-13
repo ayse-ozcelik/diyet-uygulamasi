@@ -1,27 +1,67 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Doughnut } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
+import { getCurrentUser, getWaterLogs, saveWaterLog, deleteWaterLog, deleteWaterLogsByDate } from '../api/api';
 import './SuTakibi.css';
+
+// Tarih fonksiyonu
+const getToday = (format = 'tr-TR') => {
+  return new Date().toLocaleDateString(format);
+};
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 function SuTakibi() {
-  const [user] = useState(JSON.parse(localStorage.getItem('currentUser')) || { kilo: 70 });
+  const navigate = useNavigate();
+  const [user] = useState(() => getCurrentUser() || { kilo: 70 });
   const [dailyLogs, setDailyLogs] = useState([]);
   const [showPanel, setShowPanel] = useState(false);
   const [selectedAmount, setSelectedAmount] = useState(250);
 
   const userKey = user?.email || "guest";
-  const weight = user?.kilo || 70;
+  const weight = user?.kilo || user?.weight || 70;
   const litreGoal = (weight * 0.033).toFixed(1);
   const glassGoal = Math.ceil((litreGoal * 1000) / 250);
 
+  // Güvenlik: Sürekli authentication kontrolü
   useEffect(() => {
-    const saved = JSON.parse(localStorage.getItem(`${userKey}_waterLogs`)) || [];
+    const checkAuth = () => {
+      const currentUser = getCurrentUser();
+      if (!currentUser || !currentUser.email) {
+        localStorage.removeItem('currentUser');
+        navigate('/', { replace: true });
+        return false;
+      }
+      return true;
+    };
+
+    if (!checkAuth()) return;
+
+    // Browser history değişikliklerini dinle
+    const handlePopState = () => {
+      const currentUser = getCurrentUser();
+      if (!currentUser || !currentUser.email) {
+        localStorage.removeItem('currentUser');
+        setTimeout(() => {
+          navigate('/', { replace: true });
+        }, 0);
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, [navigate]);
+
+  useEffect(() => {
+    const saved = getWaterLogs(userKey);
     setDailyLogs(saved);
   }, [userKey]);
 
-  const today = new Date().toLocaleDateString('en-CA');
+  const today = getToday('en-CA');
   const todaysEntries = dailyLogs.filter(log => log.date === today);
   const todayWater = todaysEntries.filter(l => l.type === 'Su').reduce((a, b) => a + b.value, 0);
   const todayOther = todaysEntries.filter(l => l.type !== 'Su').reduce((a, b) => a + b.value, 0);
@@ -38,25 +78,23 @@ function SuTakibi() {
 
   const handleAdd = (name, ratio, icon) => {
     const glassValue = (selectedAmount / 250) * ratio;
-    const newEntry = { id: Date.now(), date: today, type: name, ml: selectedAmount, value: glassValue, icon: icon };
-    const updated = [...dailyLogs, newEntry];
-    setDailyLogs(updated);
-    localStorage.setItem(`${userKey}_waterLogs`, JSON.stringify(updated));
+    const newEntry = { date: today, type: name, ml: selectedAmount, value: glassValue, icon: icon };
+    const saved = saveWaterLog(userKey, newEntry);
+    setDailyLogs([...dailyLogs, saved]);
     setShowPanel(false);
   };
 
   const handleDeleteLast = () => {
     if (dailyLogs.length === 0) return;
-    const updated = dailyLogs.slice(0, -1);
-    setDailyLogs(updated);
-    localStorage.setItem(`${userKey}_waterLogs`, JSON.stringify(updated));
+    const lastLog = dailyLogs[dailyLogs.length - 1];
+    deleteWaterLog(userKey, lastLog.id);
+    setDailyLogs(dailyLogs.slice(0, -1));
   };
 
   const handleDeleteDay = (dateToDelete) => {
     if (window.confirm(`${dateToDelete} tarihli tüm veriler silinsin mi?`)) {
-      const updated = dailyLogs.filter(log => log.date !== dateToDelete);
-      setDailyLogs(updated);
-      localStorage.setItem(`${userKey}_waterLogs`, JSON.stringify(updated));
+      deleteWaterLogsByDate(userKey, dateToDelete);
+      setDailyLogs(dailyLogs.filter(log => log.date !== dateToDelete));
     }
   };
 
@@ -70,15 +108,15 @@ function SuTakibi() {
 
   const GlassSVG = ({ percent, color, label, isTotal }) => (
     <div className={`glass-item ${isTotal ? 'total-item' : ''}`}>
-      <div style={{ position: 'relative', width: isTotal ? '80px' : '65px', height: isTotal ? '110px' : '90px', margin: '0 auto' }}>
-        <svg viewBox="0 0 100 120" style={{ width: '100%', height: '100%' }}>
+      <div className={`glass-container ${isTotal ? 'glass-container-total' : 'glass-container-normal'}`}>
+        <svg viewBox="0 0 100 120" className="glass-svg-container">
           <path fill="#f1f3f5" d="M10,10 L90,10 L80,110 L20,110 Z" />
-          <rect y={120 - (Math.min(percent, 100) * 1.2)} width="100" height="120" fill={color} clipPath="url(#g-mask)" style={{ transition: 'y 0.6s' }} />
+          <rect y={120 - (Math.min(percent, 100) * 1.2)} width="100" height="120" fill={color} clipPath="url(#g-mask)" className="glass-water-rect" />
           <defs><clipPath id="g-mask"><path d="M10,10 L90,10 L80,110 L20,110 Z" /></clipPath></defs>
           <path fill="none" stroke="#dee2e6" strokeWidth="3" d="M10,10 L90,10 L80,110 L20,110 Z" />
         </svg>
       </div>
-      <div className="mt-2 fw-bold text-muted" style={{ fontSize: '0.7rem' }}>{label}</div>
+      <div className="mt-2 fw-bold text-muted glass-label">{label}</div>
     </div>
   );
 
@@ -86,19 +124,13 @@ function SuTakibi() {
     // DÜZELTİLDİ: paddingTop: '30px' yapıldı.
     // Navbar artık relative olduğu için kendi yerini kaplıyor, 
     // biz sadece estetik bir üst boşluk bırakıyoruz.
-    <div className="water-page-wrapper w-100" style={{ 
-        minHeight: '100vh', 
-        marginTop: '0', 
-        paddingTop: '30px', 
-        paddingBottom: '40px',
-        backgroundColor: getDynamicBackground() 
-    }}>
+    <div className="water-page-wrapper w-100">
       <div className="container-fluid">
         <h2 className="fw-bold mb-4 text-dark"><i className="fas fa-droplet text-info me-2"></i>Sıvı Takip Analizi</h2>
 
         <div className="row g-4">
           <div className="col-lg-6">
-            <div className="section-card shadow-sm p-4 text-center h-100 bg-white" style={{borderRadius: '20px'}}>
+            <div className="section-card shadow-sm p-4 text-center h-100 bg-white water-section-card">
               <h6 className="text-muted fw-bold mb-4">Anlık Tüketim Girişi</h6>
               <div className="glass-group">
                 <GlassSVG percent={(todayWater / glassGoal) * 100} color="#22b8cf" label="Saf Su" />
@@ -131,9 +163,9 @@ function SuTakibi() {
           </div>
 
           <div className="col-lg-6">
-            <div className="section-card shadow-sm p-4 h-100 text-center bg-white" style={{borderRadius: '20px'}}>
+            <div className="section-card shadow-sm p-4 h-100 text-center bg-white water-section-card">
               <h6 className="text-muted fw-bold mb-4">Günün Dağılımı</h6>
-              <div style={{ height: '220px' }}>
+              <div className="water-chart-container">
                 <Doughnut
                   data={{
                     labels: ['Su', 'Diğer', 'Kalan'],
@@ -151,7 +183,7 @@ function SuTakibi() {
           </div>
 
           <div className="col-lg-7">
-            <div className="section-card shadow-sm p-4 h-100 bg-white" style={{borderRadius: '20px'}}>
+            <div className="section-card shadow-sm p-4 h-100 bg-white water-section-card">
               <div className="d-flex justify-content-between align-items-center mb-4">
                 <h6 className="text-muted fw-bold mb-0">Günlük Özet</h6>
                 <button className="btn-delete-last shadow-sm" onClick={handleDeleteLast} title="Son tekli girişi geri al">
@@ -177,13 +209,13 @@ function SuTakibi() {
           <div className="col-lg-5">
             <div className="row g-4">
               <div className="col-12">
-                <div className="section-card shadow-sm p-4 border-start border-info border-5 bg-white" style={{borderRadius: '20px'}}>
+                <div className="section-card shadow-sm p-4 border-start border-info border-5 bg-white water-tip-card">
                   <h6 className="fw-bold mb-2 text-info"><i className="fas fa-lightbulb me-2"></i>Sağlık İpucu</h6>
                   <p className="small text-secondary mb-0">Su içmek sadece susuzluğu gidermez, odaklanmanı da artırır. Hedefine sadık kal!</p>
                 </div>
               </div>
               <div className="col-12">
-                <div className="section-card shadow-sm p-4 text-center bg-white" style={{borderRadius: '20px'}}>
+                <div className="section-card shadow-sm p-4 text-center bg-white water-badge-card">
                   <h6 className="text-muted fw-bold mb-4 text-start">Başarı Rozetleri</h6>
                   <div className="d-flex justify-content-center gap-4">
                     {[
@@ -192,7 +224,7 @@ function SuTakibi() {
                       { id: 3, icon: '🔥', name: 'Seri', condition: todaysEntries.length > 0, desc: 'Bugün su içmeye başladın!' }
                     ].map(b => (
                       <div key={b.id} className="badge-wrapper">
-                        <div style={{ opacity: b.condition ? 1 : 0.2, fontSize: '3rem', transition: '0.3s' }}>{b.icon}</div>
+                        <div className={`badge-icon ${b.condition ? 'badge-icon-active' : 'badge-icon-inactive'}`}>{b.icon}</div>
                         <div className="badge-tooltip shadow-lg"><strong>{b.name}</strong><br />{b.desc}</div>
                       </div>
                     ))}

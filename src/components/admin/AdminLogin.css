@@ -1,0 +1,55 @@
+/* Admin Login Stilleri */
+.admin-login-wrapper {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #f0f9f4 0%, #e8f5e9 50%, #f0f9f4 100%);
+    background-color: #f0f9f4;
+    background-attachment: fixed;
+}
+
+.admin-login-card {
+    background-color: white;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    width: 350px;
+}
+
+.admin-login-title {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.admin-login-form-group {
+    margin-bottom: 15px;
+}
+
+.admin-login-label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.admin-login-input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.admin-login-submit {
+    width: 100%;
+    padding: 12px;
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.admin-login-submit:hover {
+    background-color: #c0392b;
+}

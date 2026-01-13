@@ -1,10 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import './AdminLogin.css';
 
 const AdminLogin = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
+
+  // Güvenlik: Eğer admin zaten giriş yapmışsa admin paneline yönlendir
+  useEffect(() => {
+    const isAdmin = localStorage.getItem('isAdmin');
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    
+    if (isAdmin && currentUser && currentUser.role === 'admin') {
+      navigate('/admin/dashboard', { replace: true });
+    }
+  }, [navigate]);
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -20,26 +31,39 @@ const AdminLogin = () => {
       const adminUser = { name: "Yönetici", email: adminEmail, role: "admin" };
       localStorage.setItem('currentUser', JSON.stringify(adminUser));
       
-      navigate('/admin/dashboard');
+      // replace kullanarak history'yi değiştir, geri butonuyla giriş sayfasına dönemez
+      navigate('/admin/dashboard', { replace: true });
     } else {
       alert('Giriş Başarısız! Email veya şifre yanlış.');
     }
   };
 
   return (
-    <div style={{ height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: '#2c3e50' }}>
-      <div style={{ backgroundColor: 'white', padding: '40px', borderRadius: '10px', boxShadow: '0 4px 15px rgba(0,0,0,0.2)', width: '350px' }}>
-        <h2 style={{ textAlign: 'center', color: '#333', marginBottom: '20px' }}>Admin Girişi 🔒</h2>
+    <div className="admin-login-wrapper">
+      <div className="admin-login-card">
+        <h2 className="admin-login-title">Admin Girişi 🔒</h2>
         <form onSubmit={handleLogin}>
-          <div style={{ marginBottom: '15px' }}>
-            <label style={{ display: 'block', marginBottom: '5px' }}>E-posta</label>
-            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} style={{ width: '100%', padding: '10px', border: '1px solid #ddd', borderRadius: '5px' }} placeholder="admin@gmail.com" />
+          <div className="admin-login-form-group">
+            <label className="admin-login-label">E-posta</label>
+            <input 
+              type="email" 
+              value={email} 
+              onChange={(e) => setEmail(e.target.value)} 
+              className="admin-login-input"
+              placeholder="admin@gmail.com" 
+            />
           </div>
-          <div style={{ marginBottom: '20px' }}>
-            <label style={{ display: 'block', marginBottom: '5px' }}>Şifre</label>
-            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} style={{ width: '100%', padding: '10px', border: '1px solid #ddd', borderRadius: '5px' }} placeholder="******" />
+          <div className="admin-login-form-group" style={{ marginBottom: '20px' }}>
+            <label className="admin-login-label">Şifre</label>
+            <input 
+              type="password" 
+              value={password} 
+              onChange={(e) => setPassword(e.target.value)} 
+              className="admin-login-input"
+              placeholder="******" 
+            />
           </div>
-          <button type="submit" style={{ width: '100%', padding: '12px', backgroundColor: '#e74c3c', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer', fontWeight: 'bold' }}>Panele Gir</button>
+          <button type="submit" className="admin-login-submit">Panele Gir</button>
         </form>
       </div>
     </div>

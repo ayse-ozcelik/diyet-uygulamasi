@@ -9,6 +9,7 @@
     left: 0 !important;
     width: 100vw !important;
     height: 100vh !important;
+    background-color: #f0f9f4 !important; /* Sağlığı çağrıştıran açık yeşil arka plan */
     
     z-index: 9999 !important;
     margin: 0 !important;
@@ -126,4 +127,34 @@
     background: #e8f5e9; 
     color: #2e7d32; 
     border: 1px solid #a5d6a7; 
+}
+
+/* Toggle Link Stilleri */
+.toggle-link {
+    cursor: pointer;
+    color: #43a047;
+}
+
+.toggle-link:hover {
+    text-decoration: underline;
+}
+
+/* Admin Link Bölümü */
+.auth-admin-section {
+    margin-top: 20px;
+    border-top: 1px solid #eee;
+    padding-top: 15px;
+    text-align: center;
+}
+
+.auth-admin-link {
+    background: none;
+    border: none;
+    color: #95a5a6;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.auth-admin-link:hover {
+    color: #7a8a8b;
 }

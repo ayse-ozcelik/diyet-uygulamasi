@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { getAllUsers, saveUser, saveCurrentUser, getCurrentUser } from '../api/api';
 import './Auth.css';
 
 function Auth() {
@@ -7,6 +8,15 @@ function Auth() {
   const [isLogin, setIsLogin] = useState(true);
   const [message, setMessage] = useState({ type: '', text: '' });
   const [formData, setFormData] = useState({ name: '', email: '', password: '' });
+
+  // Güvenlik: Eğer kullanıcı zaten giriş yapmışsa dashboard'a yönlendir
+  useEffect(() => {
+    const currentUser = getCurrentUser();
+    if (currentUser && currentUser.email) {
+      // replace kullanarak history'yi değiştir, geri butonuyla buraya dönemez
+      navigate('/dashboard', { replace: true });
+    }
+  }, [navigate]);
 
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -21,7 +31,7 @@ function Auth() {
       return;
     }
 
-    let users = JSON.parse(localStorage.getItem('myAppUsers')) || [];
+    const users = getAllUsers();
 
     if (users.find(u => u.email === formData.email)) {
       setMessage({ type: 'error', text: 'Bu e-posta zaten kullanımda!' });
@@ -29,8 +39,7 @@ function Auth() {
     }
 
     const newUser = { ...formData, role: 'user' };
-    users.push(newUser);
-    localStorage.setItem('myAppUsers', JSON.stringify(users));
+    saveUser(newUser);
     setMessage({ type: 'success', text: 'Kayıt başarılı! Girişe yönlendiriliyorsunuz...' });
 
     setTimeout(() => { setIsLogin(true); setMessage({ type: '', text: '' }); }, 2000);
@@ -47,13 +56,14 @@ function Auth() {
     }
 
     // 2. LocalStorage kontrolü
-    const users = JSON.parse(localStorage.getItem('myAppUsers')) || [];
+    const users = getAllUsers();
     const user = users.find(u => u.email === formData.email && u.password === formData.password);
 
     if (user) {
       setMessage({ type: 'success', text: `Hoş geldin ${user.name}! Yönlendiriliyorsunuz...` });
-      localStorage.setItem('currentUser', JSON.stringify(user));
-      setTimeout(() => { navigate('/dashboard'); }, 1500);
+      saveCurrentUser(user);
+      // replace kullanarak history'yi değiştir, geri butonuyla giriş sayfasına dönemez
+      setTimeout(() => { navigate('/dashboard', { replace: true }); }, 1500);
     } else {
       setMessage({ type: 'error', text: 'E-posta veya şifre hatalı!' });
     }
@@ -73,7 +83,7 @@ function Auth() {
               <div className="form-group"><label>Şifre</label><input type="password" name="password" onChange={handleInputChange} required /></div>
               <button type="submit" className="btn-primary">Giriş Yap</button>
             </form>
-            <p className="toggle-form">Hesabın yok mu? <span onClick={() => setIsLogin(false)} style={{cursor: 'pointer', color: '#43a047'}}>Kayıt Ol</span></p>
+            <p className="toggle-form">Hesabın yok mu? <span className="toggle-link" onClick={() => setIsLogin(false)}>Kayıt Ol</span></p>
           </div>
         ) : (
           <div id="register-area">
@@ -84,11 +94,11 @@ function Auth() {
               <div className="form-group"><label>Şifre</label><input type="password" name="password" minLength="6" onChange={handleInputChange} required /></div>
               <button type="submit" className="btn-primary">Kayıt Ol</button>
             </form>
-            <p className="toggle-form">Zaten üye misin? <span onClick={() => setIsLogin(true)} style={{cursor: 'pointer', color: '#43a047'}}>Giriş Yap</span></p>
+            <p className="toggle-form">Zaten üye misin? <span className="toggle-link" onClick={() => setIsLogin(true)}>Giriş Yap</span></p>
           </div>
         )}
-        <div style={{ marginTop: '20px', borderTop: '1px solid #eee', paddingTop: '15px', textAlign: 'center' }}>
-          <button onClick={() => navigate('/admin-login')} style={{ background: 'none', border: 'none', color: '#95a5a6', textDecoration: 'underline', cursor: 'pointer' }}>Yönetici (Admin) Girişi</button>
+        <div className="auth-admin-section">
+          <button className="auth-admin-link" onClick={() => navigate('/admin-login')}>Yönetici (Admin) Girişi</button>
         </div>
       </div>
     </div>

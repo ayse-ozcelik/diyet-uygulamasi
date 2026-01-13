@@ -1,0 +1,82 @@
+/* Tarifler Sayfası Stilleri */
+.tarifler-wrapper {
+    background: linear-gradient(135deg, #f0f9f4 0%, #e8f5e9 50%, #f0f9f4 100%);
+    background-color: var(--bg-cream);
+    background-attachment: fixed;
+    min-height: 100vh;
+}
+
+.tarifler-title {
+    color: #1b4332;
+}
+
+.recipe-card {
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.recipe-card:hover {
+    transform: translateY(-5px);
+}
+
+.recipe-card-image {
+    height: 250px;
+    object-fit: cover;
+}
+
+.recipe-time-badge {
+    background-color: #1b4332;
+}
+
+.recipe-details-box {
+    background-color: #f8fdfa;
+    border-left: 4px solid #1b4332;
+}
+
+.recipe-modal-overlay {
+    z-index: 2000;
+    backdrop-filter: blur(10px);
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+.recipe-modal-container {
+    max-width: 900px;
+}
+
+.recipe-modal-close-btn {
+    z-index: 10;
+    width: 40px;
+    height: 40px;
+}
+
+.recipe-modal-image {
+    object-fit: cover;
+    min-height: 450px;
+}
+
+.recipe-modal-title {
+    color: #1b4332;
+}
+
+.recipe-modal-details {
+    font-size: 1.1rem;
+}
+
+.recipe-modal-steps-title {
+    letter-spacing: 1px;
+}
+
+.recipe-modal-steps-container {
+    max-height: 250px;
+}
+
+.recipe-modal-step-number {
+    min-width: 24px;
+    height: 24px;
+    font-size: 0.8rem;
+}
+
+.recipe-modal-close-button {
+    background-color: #1b4332;
+    border: none;
+}

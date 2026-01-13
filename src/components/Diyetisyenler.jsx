@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import './Diyetisyenler.css';
+import { useNavigate } from 'react-router-dom';
+import { getAppointments, addAppointment, deleteAppointment, getCurrentUser } from '../api/api';
 import { FaCalendarAlt, FaClock, FaUserMd, FaMapMarkerAlt, FaStar, FaCheckCircle, FaTimes, FaTrashAlt, FaCalendarCheck } from 'react-icons/fa';
+import './Diyetisyenler.css';
 
 const Diyetisyenler = () => {
+  const navigate = useNavigate();
   const [diyetisyenler] = useState([
     { id: 1, isim: "Dyt. Ayşe Yılmaz", uzmanlik: "Kilo Kontrolü", puan: 4.9, konum: "İstanbul, Kadıköy", foto: "https://randomuser.me/api/portraits/women/44.jpg" },
     { id: 2, isim: "Dyt. Mehmet Demir", uzmanlik: "Sporcu Beslenmesi", puan: 4.8, konum: "Ankara, Çankaya", foto: "https://randomuser.me/api/portraits/men/32.jpg" },
@@ -18,8 +21,40 @@ const Diyetisyenler = () => {
   const [alinmisRandevular, setAlinmisRandevular] = useState([]);
   const [isSuccess, setIsSuccess] = useState(false);
 
+  // Güvenlik: Sürekli authentication kontrolü
   useEffect(() => {
-    const kayitliRandevular = JSON.parse(localStorage.getItem('randevular')) || [];
+    const checkAuth = () => {
+      const currentUser = getCurrentUser();
+      if (!currentUser || !currentUser.email) {
+        localStorage.removeItem('currentUser');
+        navigate('/', { replace: true });
+        return false;
+      }
+      return true;
+    };
+
+    if (!checkAuth()) return;
+
+    // Browser history değişikliklerini dinle
+    const handlePopState = () => {
+      const currentUser = getCurrentUser();
+      if (!currentUser || !currentUser.email) {
+        localStorage.removeItem('currentUser');
+        setTimeout(() => {
+          navigate('/', { replace: true });
+        }, 0);
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, [navigate]);
+
+  useEffect(() => {
+    const kayitliRandevular = getAppointments();
     setAlinmisRandevular(kayitliRandevular);
   }, []);
 
@@ -34,7 +69,6 @@ const Diyetisyenler = () => {
     if (!secilenTarih) return;
 
     const yeniRandevu = {
-      id: Date.now(),
       kullanici: "Mevcut Kullanıcı",
       diyetisyenId: secilenDiyetisyen.id,
       diyetisyenIsim: secilenDiyetisyen.isim,
@@ -43,9 +77,8 @@ const Diyetisyenler = () => {
       durum: "Onaylandı"
     };
 
-    const guncelListe = [...alinmisRandevular, yeniRandevu];
-    setAlinmisRandevular(guncelListe);
-    localStorage.setItem('randevular', JSON.stringify(guncelListe));
+    const saved = addAppointment(yeniRandevu);
+    setAlinmisRandevular([...alinmisRandevular, saved]);
 
     setIsSuccess(true);
     
@@ -55,12 +88,10 @@ const Diyetisyenler = () => {
     }, 2000);
   };
 
-  // YENİ EKLENEN FONKSİYON: İPTAL ETME
   const handleRandevuIptal = (id) => {
     if (window.confirm("Bu randevuyu iptal etmek istediğinize emin misiniz?")) {
-      const yeniListe = alinmisRandevular.filter((randevu) => randevu.id !== id);
-      setAlinmisRandevular(yeniListe);
-      localStorage.setItem('randevular', JSON.stringify(yeniListe));
+      deleteAppointment(id);
+      setAlinmisRandevular(alinmisRandevular.filter((randevu) => randevu.id !== id));
     }
   };
 
@@ -155,23 +186,23 @@ const Diyetisyenler = () => {
               ) : (
                 <>
                   <div className="modal-header">
-                    <h3 style={{margin:0}}><FaCalendarAlt /> Randevu Planla</h3>
+                    <h3><FaCalendarAlt /> Randevu Planla</h3>
                     <button className="close-btn" onClick={() => setModalOpen(false)}><FaTimes /></button>
                   </div>
                   
-                  <div style={{display:'flex', alignItems:'center', gap:'15px', marginBottom:'20px'}}>
-                    <img src={secilenDiyetisyen?.foto} alt="thumb" style={{width:'50px', height:'50px', borderRadius:'50%'}}/>
+                  <div className="modal-dietitian-info">
+                    <img src={secilenDiyetisyen?.foto} alt="thumb" className="modal-dietitian-thumb"/>
                     <div>
                       <strong>{secilenDiyetisyen?.isim}</strong> <br/>
-                      <small style={{color:'#666'}}>{secilenDiyetisyen?.uzmanlik}</small>
+                      <small className="modal-dietitian-specialty">{secilenDiyetisyen?.uzmanlik}</small>
                     </div>
                   </div>
 
-                  <div style={{marginBottom:'20px'}}>
-                    <label style={{display:'block', marginBottom:'8px', fontWeight:'500'}}>Tarih Seçiniz:</label>
+                  <div className="modal-date-group">
+                    <label className="modal-date-label">Tarih Seçiniz:</label>
                     <input 
                       type="date" 
-                      style={{width:'100%', padding:'10px', borderRadius:'8px', border:'1px solid #ddd'}}
+                      className="modal-date-input"
                       value={secilenTarih} 
                       onChange={(e) => setSecilenTarih(e.target.value)} 
                       min={new Date().toISOString().split("T")[0]} 
@@ -180,7 +211,7 @@ const Diyetisyenler = () => {
 
                   {secilenTarih ? (
                     <div>
-                      <label style={{display:'block', marginBottom:'8px', fontWeight:'500'}}><FaClock /> Müsait Saatler:</label>
+                      <label className="modal-time-label"><FaClock /> Müsait Saatler:</label>
                       <div className="saat-grid">
                         {saatDilimleri.map((saat) => (
                           <button 
@@ -195,8 +226,8 @@ const Diyetisyenler = () => {
                       </div>
                     </div>
                   ) : (
-                    <div style={{textAlign:'center', color:'#999', padding:'20px'}}>
-                      <FaCalendarAlt size={30} style={{marginBottom:'10px'}}/>
+                    <div className="modal-empty-state">
+                      <FaCalendarAlt size={30} className="modal-empty-icon"/>
                       <p>Lütfen saatleri görmek için tarih seçiniz.</p>
                     </div>
                   )}

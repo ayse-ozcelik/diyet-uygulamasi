@@ -1,6 +1,8 @@
 
 .profile-page-container {
-    background: linear-gradient(135deg, #f0f7f4 0%, #e8f5e9 100%);
+    background: linear-gradient(135deg, #f0f9f4 0%, #e8f5e9 50%, #f0f9f4 100%);
+    background-color: var(--bg-cream);
+    background-attachment: fixed;
     min-height: 100vh;
     display: flex;
     align-items: center;
@@ -82,4 +84,17 @@
     transform: translateY(-2px);
     box-shadow: 0 10px 20px rgba(231, 111, 81, 0.2);
     color: white;
+}
+
+/* Profil Sayfası Özel Stiller */
+.profile-avatar-icon {
+    color: #1b4332;
+}
+
+.profile-lock-icon {
+    color: #ced4da;
+}
+
+.profile-input-icon-right {
+    right: 12px;
 }

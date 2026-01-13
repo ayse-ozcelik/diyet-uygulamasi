@@ -3,8 +3,9 @@
 .water-page-wrapper {
     min-height: 100vh;
     padding-bottom: 50px;
-    transition: background-color 1.5s ease-in-out;
-    /* Renk geçiş yumuşatması */
+    background: linear-gradient(135deg, #f0f9f4 0%, #e8f5e9 50%, #f0f9f4 100%);
+    background-color: var(--bg-cream);
+    background-attachment: fixed;
 }
 
 /* Kart Tasarımları */
@@ -13,6 +14,16 @@
     border-radius: 30px !important;
     border: none;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+/* SVG Container */
+.glass-svg-container {
+    width: 100%;
+    height: 100%;
+}
+
+.glass-water-rect {
+    transition: y 0.6s;
 }
 
 /* Bardak Grubu */
@@ -140,4 +151,60 @@
 .right-side-actions {
     display: flex;
     align-items: center;
+}
+
+/* SuTakibi Sayfası Özel Stiller */
+.water-page-wrapper {
+    min-height: 100vh;
+    margin-top: 0;
+    padding-top: 30px;
+    padding-bottom: 40px;
+    background-color: var(--bg-cream);
+}
+
+.water-section-card {
+    border-radius: 20px;
+}
+
+.water-chart-container {
+    height: 220px;
+}
+
+.glass-label {
+    font-size: 0.7rem;
+}
+
+.glass-container {
+    position: relative;
+}
+
+.glass-container-total {
+    width: 80px;
+    height: 110px;
+}
+
+.glass-container-normal {
+    width: 65px;
+    height: 90px;
+}
+
+.water-tip-card {
+    border-radius: 20px;
+}
+
+.water-badge-card {
+    border-radius: 20px;
+}
+
+.badge-icon {
+    font-size: 3rem;
+    transition: 0.3s;
+}
+
+.badge-icon-active {
+    opacity: 1;
+}
+
+.badge-icon-inactive {
+    opacity: 0.2;
 }
