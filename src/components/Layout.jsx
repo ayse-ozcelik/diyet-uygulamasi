@@ -1,10 +1,5 @@
 import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-<<<<<<< HEAD
-import './Beslenme.css'; 
-=======
-import './Beslenme.css'; // Ortak CSS dosyanız
->>>>>>> 9f6058059f5ac7b23911c40f06b68cbda2954e37
 
 const Layout = ({ children }) => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -18,28 +13,53 @@ const Layout = ({ children }) => {
 
     const isActive = (path) => location.pathname === path ? 'active' : '';
 
-    // KREM RENK TEMASI İÇİN ORTAK STİL
-    const creamTheme = {
-        backgroundColor: '#fdfbf7', // Sıcak, açık krem rengi
-        color: '#333' // Koyu yazı rengi
+    // --- 1. NAVBAR STİLİ (ÜST MENÜ) ---
+    // Buraya yazdığımız kodlar CSS dosyasını beklemez, anında çalışır.
+    const navbarStyle = {
+        backgroundColor: '#ffffff',     // KESİN BEYAZ
+        borderBottom: '1px solid #ddd', // Altına gri çizgi (Yeşille karışmasın diye)
+        boxShadow: '0 2px 10px rgba(0,0,0,0.05)', // Hafif gölge
+        position: 'relative',           // Sayfa akışında dursun
+        zIndex: 1000                    // En üstte görünsün
+    };
+
+    // --- 2. SIDEBAR STİLİ (SOL MENÜ) ---
+    // Burası yeşil kalsın istiyorsan bu renkleri kullanabilirsin
+    const sidebarStyle = {
+        backgroundColor: '#1b4332', // Koyu Yeşil
+        color: '#ffffff',           // Yazılar Beyaz
+        height: '100vh',
+        position: 'fixed',
+        top: 0,
+        left: isSidebarOpen ? 0 : '-280px', // Açık/Kapalı ayarı
+        width: '280px',
+        transition: '0.3s',
+        zIndex: 1050,
+        boxShadow: '5px 0 15px rgba(0,0,0,0.1)',
+        paddingTop: '1rem'
     };
 
     return (
-        <div className="dashboard-wrapper">
-            {/* Sidebar Overlay (Mobilde karartma) */}
-            <div 
-                className={`sidebar-overlay ${isSidebarOpen ? 'active' : ''}`} 
-                onClick={() => setIsSidebarOpen(false)}
-            ></div>
+        <div className="dashboard-wrapper" style={{ backgroundColor: '#fdfbf7', minHeight: '100vh' }}>
+            
+            {/* Sidebar Overlay (Karartma) */}
+            {isSidebarOpen && (
+                <div 
+                    onClick={() => setIsSidebarOpen(false)}
+                    style={{
+                        position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh',
+                        backgroundColor: 'rgba(0,0,0,0.4)', zIndex: 1040
+                    }}
+                ></div>
+            )}
 
-            {/* --- NAVBAR (ÜST KISIM) --- */}
-            <nav className="navbar navbar-expand-lg navbar-light shadow-sm" style={creamTheme}>
+            {/* --- NAVBAR --- */}
+            <nav className="navbar navbar-expand-lg navbar-light" style={navbarStyle}>
                 <div className="container-fluid">
                     <button className="btn btn-link text-dark me-2" onClick={() => setIsSidebarOpen(true)}>
                         <i className="fas fa-bars fa-lg"></i>
                     </button>
                     
-                    {/* LOGO: DIET (Koyu) + DIARY (Turuncu) */}
                     <Link className="navbar-brand fw-bold text-dark" to="/dashboard" style={{ fontSize: '1.5rem' }}>
                         DIET<span style={{color: '#e76f51'}}>DIARY</span>
                     </Link>
@@ -52,63 +72,42 @@ const Layout = ({ children }) => {
                 </div>
             </nav>
 
-            {/* --- SIDEBAR (SOL MENÜ) --- */}
-            <div id="leftSidebar" className={isSidebarOpen ? 'active' : ''} 
-                style={{
-                    ...creamTheme, 
-                    borderRight: '1px solid #e0e0e0' // Menüyü içerikten ayıran ince çizgi
-                }}
-            >
-                {/* Menü Başlığı */}
-                <div className="sidebar-header p-3" style={{...creamTheme, borderBottom: '1px solid #e0e0e0'}}>
-                    <h5 className="m-0 fw-bold" style={{color: '#1b4332'}}>Menü</h5>
+            {/* --- SIDEBAR --- */}
+            <div id="leftSidebar" style={sidebarStyle}>
+                <div className="p-3 border-bottom border-secondary">
+                    <h5 className="m-0 fw-bold text-white">Menü</h5>
                 </div>
-                
-                {/* Linkler */}
-                <ul className="list-unstyled mt-2">
-                    <li>
-                        <Link to="/dashboard" className={`text-dark ${isActive('/dashboard')}`} onClick={() => setIsSidebarOpen(false)}>
-                            <i className="fas fa-th-large me-2"></i>Genel Bakış
-                        </Link>
-                    </li>
-                    <li>
-                        <Link to="/beslenme" className={`text-dark ${isActive('/beslenme')}`} onClick={() => setIsSidebarOpen(false)}>
-                            <i className="fas fa-utensils me-2"></i>Beslenme Günlüğü
-                        </Link>
-                    </li>
-                    <li>
-                        <Link to="/egzersizler" className={`text-dark ${isActive('/egzersizler')}`} onClick={() => setIsSidebarOpen(false)}>
-                            <i className="fas fa-dumbbell me-2"></i>Egzersizler
-                        </Link>
-                    </li>
-
-                     <li>
-                        <Link to="/tarifler" className={`text-dark ${isActive('/tarifler')}`} onClick={() => setIsSidebarOpen(false)}>
-                            <i className="fas fa-book-open me-2"></i>Sağlıklı Tarifler
-                        </Link>
-                    </li>
-                    
-                    <li>
-                        <Link to="/su-takibi" className={`text-dark ${isActive('/su-takibi')}`} onClick={() => setIsSidebarOpen(false)}>
-                            <i className="fas fa-tint me-2"></i>Su Takibi
-                        </Link>
-                    </li>
-                    
-                    <li>
-                        <Link to="/diyetisyenler" className={`text-dark ${isActive('/diyetisyenler')}`} onClick={() => setIsSidebarOpen(false)}>
-                            <i className="fas fa-user-md me-2"></i>Diyetisyenler
-                        </Link>
-                    </li>
-                    <li>
-                        <Link to="/profil" className={`text-dark ${isActive('/profil')}`} onClick={() => setIsSidebarOpen(false)}>
-                            <i className="fas fa-user me-2"></i>Profilim
-                        </Link>
-                    </li>
+                <ul className="list-unstyled mt-3 px-2">
+                    {/* Linkler için basit stil */}
+                    {[
+                        { to: '/dashboard', icon: 'fa-th-large', text: 'Genel Bakış' },
+                        { to: '/beslenme', icon: 'fa-utensils', text: 'Beslenme Günlüğü' },
+                        { to: '/egzersizler', icon: 'fa-dumbbell', text: 'Egzersizler' },
+                        { to: '/tarifler', icon: 'fa-book-open', text: 'Sağlıklı Tarifler' },
+                        { to: '/su-takibi', icon: 'fa-tint', text: 'Su Takibi' },
+                        { to: '/diyetisyenler', icon: 'fa-user-md', text: 'Diyetisyenler' },
+                        { to: '/profil', icon: 'fa-user', text: 'Profilim' }
+                    ].map((item, index) => (
+                        <li key={index} className="mb-2">
+                            <Link 
+                                to={item.to} 
+                                className="text-decoration-none text-white d-block p-2 rounded"
+                                onClick={() => setIsSidebarOpen(false)}
+                                style={{ 
+                                    backgroundColor: location.pathname === item.to ? 'rgba(255,255,255,0.2)' : 'transparent',
+                                    transition: '0.2s'
+                                }}
+                            >
+                                <i className={`fas ${item.icon} me-3`} style={{width: '20px'}}></i>
+                                {item.text}
+                            </Link>
+                        </li>
+                    ))}
                 </ul>
             </div>
 
-            {/* SAYFA İÇERİĞİ */}
-            <div className="main-content-area" style={{paddingTop: '0px'}}>
+            {/* --- İÇERİK ALANI --- */}
+            <div className="main-content-area">
                 {children}
             </div>
         </div>

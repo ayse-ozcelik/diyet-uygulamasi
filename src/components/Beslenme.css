@@ -18,13 +18,13 @@
 
 /* Navbar */
 .navbar { 
-    background-color: var(--main-green) !important; 
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    background-color: var(--main-white) !important; 
+    box-shadow: 0 4px 12px rgb(245, 245, 245);
 }
 
 /* --- SIDEBAR & OVERLAY --- */
 #leftSidebar {
-    background-color: var(--main-green);
+    background-color: var(--main-white);
     position: fixed; top: 0; left: -280px;
     width: 280px; height: 100vh;
     transition: 0.3s; z-index: 1050;
@@ -33,7 +33,7 @@
 #leftSidebar.active { left: 0; }
 
 #leftSidebar ul li a {
-    color: var(--light-green); text-decoration: none;
+    color: var(--light-white); text-decoration: none;
     padding: 15px 25px; display: flex; align-items: center; transition: 0.2s;
 }
 #leftSidebar ul li a:hover { background: rgba(255,255,255,0.1); color: var(--white); }

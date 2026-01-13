@@ -1,169 +1,176 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
 
 :root { 
-  /* YENİ RENK PALETİ: Earth Tones (Toprak/Krem) */
-  --primary-brown: #4E342E;   /* Ana Koyu Kahve (Eski yeşil yerine) */
-  --medium-brown: #8D6E63;    /* Orta ton kahve/vizon */
-  --soft-cream: #FDFBF7;      /* Zemin Rengi (Kırık Beyaz) */
-  --accent-gold: #D4A373;     /* Vurgu rengi (Altın sarısı/Bej) */
-  
-  /* İkon renkleri aynı kalabilir veya yumuşatılabilir */
-  --accent-orange: #ff9f43;
-  --accent-blue: #0984e3;
-  --accent-red: #ff7675;
-  --white: #ffffff;
+    /* --- RENK PALETİ (Yeşil Tema) --- */
+    --main-green: #1b4332;       /* Koyu Yeşil (Sidebar ve Başlıklar) */
+    --light-green: #b7e4c7;      /* Açık Yeşil (Vurgular) */
+    --accent-salmon: #e76f51;    /* Turuncu/Somon (Butonlar) */
+    --bg-cream: #fdfbf7;         /* Sayfa Arka Planı (Kırık Beyaz) */
+    --white: #ffffff;            /* Tam Beyaz */
+    --text-dark: #333333;        /* Koyu Gri Yazı */
 }
 
-/* --- GENEL DÜZEN --- */
+/* --- ANA YAPI --- */
+body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--bg-cream); /* Tüm sayfa arka planı */
+}
+
 .dashboard-wrapper { 
-  background-color: var(--soft-cream); /* Arka plan artık krem */
-  min-height: 100vh; 
-  font-family: 'Poppins', sans-serif;
-  padding-bottom: 50px;
+    background-color: var(--bg-cream); 
+    min-height: 100vh; 
+    font-family: 'Poppins', sans-serif;
+    padding-bottom: 50px;
 }
 
-/* --- NAVBAR --- */
-/* Navbar'ı Layout.js'de style ile verdiğin için burası ezilebilir ama garanti olsun */
+/* --- NAVBAR DÜZELTME (BEYAZ & AYRIK) --- */
 .navbar { 
-  position: fixed; top: 0; width: 100%; z-index: 1030; 
-  background: var(--soft-cream) !important; 
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-  border-bottom: 1px solid #EFEBE9;
+    background-color: #ffffff !important; /* Arka plan kesinlikle BEYAZ */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05); /* Hafif gölge */
+    border-bottom: 1px solid #e0e0e0; /* İçerikle karışmaması için alt çizgi */
+    padding-top: 0.8rem;
+    padding-bottom: 0.8rem;
 }
 
-/* --- SIDEBAR & OVERLAY --- */
+/* Navbar Linkleri */
+.navbar .nav-link, 
+.navbar .navbar-brand {
+    color: var(--text-dark) !important;
+}
+
+/* --- SIDEBAR (SOL MENÜ) --- */
 #leftSidebar {
-  position: fixed; left: -280px; top: 0; width: 280px; height: 100%;
-  background: var(--primary-brown); /* Sidebar artık koyu kahve */
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  z-index: 1050; 
-  padding-top: 1rem;
-  box-shadow: 10px 0 30px rgba(0,0,0,0.1);
+    background-color: var(--main-green); /* Menü Yeşil */
+    position: fixed; 
+    top: 0; 
+    left: -280px;
+    width: 280px; 
+    height: 100vh;
+    transition: 0.3s; 
+    z-index: 1050;
+    padding-top: 1rem;
+    box-shadow: 5px 0 15px rgba(0,0,0,0.1);
 }
 
 #leftSidebar.active { left: 0; }
 
-#leftSidebar ul { list-style: none; padding: 20px; }
-#leftSidebar ul li a {
-  color: rgba(255, 255, 255, 0.9); 
-  text-decoration: none; 
-  display: flex;
-  align-items: center; 
-  padding: 12px 20px; 
-  border-radius: 12px; 
-  transition: 0.3s;
-  font-size: 1rem;
-}
-#leftSidebar ul li a:hover { 
-  background: rgba(255, 255, 255, 0.15); 
-  color: #fff; 
-  transform: translateX(10px); 
+#leftSidebar .sidebar-header h5 {
+    color: white !important; /* Menü başlığı beyaz */
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    padding-bottom: 15px;
 }
 
-/* Overlay */
+#leftSidebar ul {
+    list-style: none;
+    padding: 0;
+    margin-top: 20px;
+}
+
+#leftSidebar ul li a {
+    color: rgba(255,255,255,0.8) !important; /* Linkler hafif şeffaf beyaz */
+    text-decoration: none;
+    padding: 15px 25px; 
+    display: flex; 
+    align-items: center; 
+    transition: 0.2s;
+    font-size: 16px;
+}
+
+#leftSidebar ul li a:hover, 
+#leftSidebar ul li a.active { 
+    background: rgba(255,255,255,0.15); 
+    color: white !important; 
+    border-left: 4px solid var(--accent-salmon);
+}
+
 .sidebar-overlay {
-  position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-  background-color: rgba(78, 52, 46, 0.4); /* Kahve tonlu karartma */
-  display: none; 
-  z-index: 1040;
-  backdrop-filter: blur(2px);
-  transition: background-color 0.3s ease;
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    background: rgba(0,0,0,0.4); backdrop-filter: blur(2px);
+    display: none; z-index: 1040;
 }
 .sidebar-overlay.active { display: block; }
 
-/* --- HEADER --- */
-.dashboard-header { 
-  /* Koyu yeşil gradient yerine çok soft bir geçiş */
-  background: linear-gradient(180deg, #FDFBF7 0%, #EFEBE9 100%); 
-  color: var(--primary-brown); /* Yazılar artık koyu */
-  padding: 6rem 0 4rem; 
-  border-radius: 0 0 50px 50px; 
-  text-align: center;
-}
-
-/* --- İSTATİSTİK KARTLARI --- */
-.stat-card {
-  background: var(--white); 
-  border-radius: 20px; 
-  padding: 25px;
-  display: flex; 
-  flex-direction: column; 
-  align-items: center;
-  justify-content: space-between;
-  text-align: center; 
-  border: 1px solid #f0f0f0; /* Hafif sınır */
-  box-shadow: 0 10px 25px rgba(78, 52, 46, 0.03); /* Gölge rengi değişti */
-  transition: all 0.3s ease; 
-  height: 260px;
-}
-
-.stat-card:hover { 
-  transform: translateY(-7px); 
-  box-shadow: 0 15px 30px rgba(78, 52, 46, 0.08) !important; 
-}
-
-.stat-icon {
-  width: 60px; height: 60px; 
-  border-radius: 15px; 
-  display: flex;
-  align-items: center; justify-content: center; 
-  font-size: 1.5rem;
-  margin-bottom: 10px;
-}
-
-.stat-card .progress { width: 100%; margin: 10px 0; }
-.stat-card button { margin-top: auto; width: 100%; }
-
-/* --- GLASS KARTLAR --- */
-.glass-card-premium {
-    background: #fff;
-    border: 1px solid #EFEBE9;
-    border-radius: 25px;
-    box-shadow: 0 15px 35px rgba(78, 52, 46, 0.05);
-    transition: transform 0.3s ease;
-}
-
-/* --- OYUN ALANI --- */
-.game-card-minimal {
-    background: #fff;
-    border: 1px solid #EFEBE9;
-    border-radius: 25px;
+/* --- HEADER KISMI (YEŞİL ALAN) --- */
+/* Navbar ile karışmaması için üstten boşluk bırakıyoruz */
+.welcome-section {
+    background-color: var(--main-green);
+    color: white;
+    padding: 3rem 1rem 4rem 1rem; /* Üst-Alt boşluk */
+    border-bottom-left-radius: 40px;
+    border-bottom-right-radius: 40px;
+    margin-bottom: -40px; /* Kartların üzerine binmesi için */
+    text-align: center;
     position: relative;
-    overflow: hidden;
+    z-index: 1;
 }
 
-#game-container {
-    background-color: #F1F8E9; /* Çok açık yeşil (çim hissi için kalsın ama soft) */
-    background-image: 
-        linear-gradient(90deg, rgba(78, 52, 46, 0.05) 1px, transparent 1px),
-        linear-gradient(rgba(78, 52, 46, 0.05) 1px, transparent 1px);
-    background-size: 40px 40px; 
+/* --- KARTLAR (İstatistik vb.) --- */
+.section-card, .nutrition-summary-card, .quick-card {
+    background: var(--white);
     border-radius: 20px;
-    position: relative; 
-    overflow: hidden; 
-    border-bottom: 5px solid var(--medium-brown); /* Alt çizgi kahve oldu */
+    border: 1px solid #f0f0f0;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    margin-bottom: 20px;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+    z-index: 2; /* Yeşil alanın üstünde durması için */
+    position: relative;
 }
 
-/* --- BUTONLAR --- */
-.btn-premium-gradient {
-    background: linear-gradient(135deg, #4E342E 0%, #6D4C41 100%);
-    border: none; color: white; border-radius: 15px;
-    padding: 10px 25px; font-weight: 600; transition: 0.3s;
-}
-.btn-premium-gradient:hover { 
-    transform: translateY(-3px); 
-    box-shadow: 0 10px 20px rgba(78, 52, 46, 0.2); 
+.section-card, .nutrition-summary-card { padding: 25px; }
+
+.section-card:hover { transform: translateY(-5px); }
+
+/* --- FORM & BUTONLAR --- */
+.form-control, .form-select {
+    background-color: #f8f9fa !important;
+    border: 1px solid #eee !important;
+    border-radius: 12px !important;
+    padding: 12px !important;
 }
 
-/* --- MOTİVASYON KUTUSU --- */
-.motivation-mini-box {
-    border: 1px solid #EFEBE9;
-    background-color: #fff;
-    color: var(--primary-brown);
+.form-control:focus { 
+    border-color: var(--main-green) !important; 
+    box-shadow: 0 0 0 3px rgba(27, 67, 50, 0.1) !important; 
 }
 
-@media (max-width: 768px) {
-    .dashboard-header { padding: 5rem 0 3rem; }
-    .display-6 { font-size: 1.8rem; }
-    .stat-card { height: auto; min-height: 200px; }
+.btn-primary, .btn-success, .btn-save {
+    background-color: var(--accent-salmon) !important;
+    border: none !important;
+    border-radius: 50px !important;
+    color: white !important;
+    font-weight: 600 !important;
+    padding: 10px 25px !important;
+    box-shadow: 0 4px 10px rgba(231, 111, 81, 0.3);
+    transition: 0.3s;
+}
+
+.btn-primary:hover, .btn-save:hover { 
+    background-color: #d65a3b !important;
+    transform: translateY(-2px); 
+}
+
+/* --- YEMEK LİSTESİ --- */
+.meal-list-item {
+    background: #ffffff; 
+    border-radius: 15px; 
+    margin-bottom: 15px;
+    border: 1px solid #eee;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    transition: 0.2s;
+}
+
+.meal-list-item:hover { 
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    border-color: var(--light-green);
+}
+
+.food-img { 
+    height: 180px; 
+    width: 100%; 
+    object-fit: cover; 
+    border-radius: 15px;
 }

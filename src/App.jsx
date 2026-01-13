@@ -1,10 +1,13 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
+// Yeni oluşturduğun component
+import AdminUsers from './components/admin/AdminUsers';
+
 import AdminLayout from './components/admin/AdminLayout';
 import AdminDashboard from './components/admin/Dashboard'; 
 import AdminLogin from './components/admin/AdminLogin';
-import Users from './components/admin/Users';
+// import Users from './components/admin/Users'; // Artık AdminUsers kullanıyoruz, buna gerek kalmadı
 import Foods from './components/admin/Foods';
 import AdminRandevular from './components/admin/AdminRandevular';
 
@@ -22,14 +25,22 @@ function App() {
   return (
     <Router>
       <Routes>
+        {/* Admin Login - Layout YOK (Tam ekran) */}
         <Route path="/admin-login" element={<AdminLogin />} />
+
+        {/* Admin Paneli - Layout VAR (Sidebar ve Header gelir) */}
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<AdminDashboard />} />
           <Route path="dashboard" element={<AdminDashboard />} />
-          <Route path="users" element={<Users />} />
+          
+          {/* DÜZELTME: Artık 'users' yoluna gidince yeni tablon açılacak */}
+          <Route path="users" element={<AdminUsers />} />
+          
           <Route path="foods" element={<Foods />} />
           <Route path="randevular" element={<AdminRandevular />} />
         </Route>
+
+        {/* Kullanıcı Paneli */}
         <Route path="/" element={<Auth />} />
         <Route path="/dashboard" element={<Layout><Dashboard /></Layout>} />
         <Route path="/beslenme" element={<Layout><Beslenme /></Layout>} />

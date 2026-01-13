@@ -161,12 +161,7 @@ function Dashboard() {
   const totalCalories = meals.reduce((sum, m) => sum + parseInt(m.cal || 0), 0);
 
   return (
-<<<<<<< HEAD
-    // DÜZELTME: marginTop: '-24px' ekledik. Bu sayede Layout'un boşluğunu kapatıp yukarı yapışacak.
-    <div className="dashboard-wrapper w-100" style={{ minHeight: '100vh', backgroundColor: '#f8f9fa', marginTop: '-px' }}>
-=======
-    <div className="dashboard-wrapper w-100" style={{ minHeight: '100vh', backgroundColor: '#f8f9fa', marginTop: '-80px' }}>
->>>>>>> 9f6058059f5ac7b23911c40f06b68cbda2954e37
+    <div className="dashboard-wrapper w-100" style={{ minHeight: '100vh', backgroundColor: '#f8f9fa', marginTop: '-20px' }}>
       
       {/* HEADER */}
       <div className="dashboard-header w-100 text-center pb-5 pt-5" style={{ backgroundColor: '#1b4332', color: 'white', borderBottomLeftRadius: '30px', borderBottomRightRadius: '30px' }}>
